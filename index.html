@@ -348,8 +348,10 @@
       font-family: var(--font-serif);
       font-size: 12px;
       font-weight: 400;
-      letter-spacing: 0.2em;
-      color: rgba(224, 214, 194, 0.56);
+      letter-spacing: 0.36em;
+      margin-right: -0.36em;
+      text-align: right;
+      color: rgba(224, 214, 194, 0.62);
       white-space: nowrap;
       flex-shrink: 0;
     }
@@ -1172,8 +1174,6 @@
       color: #fef6e4;
     }
 
-
-
     /* 米字格交互笔画解构器 */
     .decomp-card {
       padding: 14px;
@@ -1466,10 +1466,10 @@
         mask-image: linear-gradient(to right, transparent 0%, #000 18px, #000 calc(100% - 18px), transparent 100%);
       }
 
-      /* 移动端右侧独立竖向缩放胶囊 */
+      /* 移动端右侧独立竖向缩放胶囊：悬停于底部星域导航栏与安全区之上 */
       .zoom-capsule {
         right: 12px;
-        bottom: 72px;
+        bottom: calc(78px + env(safe-area-inset-bottom, 0px));
       }
       .zoom-capsule.drawer-shifted {
         right: 12px;
@@ -1479,13 +1479,13 @@
         height: 34px;
       }
 
-      /* 移动端九章漫游卡 */
+      /* 移动端九章漫游卡：悬停于底部星域导航栏与安全区之上 */
       .tour-card {
         left: 12px;
         right: 64px;
         width: auto;
         max-width: none;
-        bottom: 72px;
+        bottom: calc(78px + env(safe-area-inset-bottom, 0px));
         padding: 13px 14px;
       }
       .tour-body {
@@ -1560,8 +1560,9 @@
         letter-spacing: 0.13em;
       }
       .brand-subtitle {
-        font-size: 11px;
-        letter-spacing: 0.16em;
+        font-size: 11.5px;
+        letter-spacing: 0.32em;
+        margin-right: -0.32em;
       }
       .header-row-controls {
         gap: 8px;
@@ -1609,6 +1610,11 @@
 
     /* 超窄屏（如 365px 以下）微收紧按钮边距，确保搜索框与三联胶囊永不裁切 */
     @media (max-width: 365px) {
+      .brand-subtitle {
+        font-size: 11px;
+        letter-spacing: 0.24em;
+        margin-right: -0.24em;
+      }
       .header-row-controls {
         gap: 5px;
       }
@@ -3424,7 +3430,9 @@
         const headerEl = document.querySelector('.top-header-shell');
         const headerBottom = headerEl ? Math.ceil(headerEl.getBoundingClientRect().bottom) + 12 : (isDesktop ? 114 : 116);
         const topPad = Math.max(isDesktop ? 114 : 112, headerBottom);
-        const bottomPad = isDesktop ? 86 : 74;
+        const filterEl = document.querySelector('.filter-bar-wrap');
+        const filterSpace = filterEl ? Math.ceil(vh - filterEl.getBoundingClientRect().top) + 12 : (isDesktop ? 86 : 96);
+        const bottomPad = Math.max(isDesktop ? 86 : 84, filterSpace);
         const w = Math.max(220, vw - leftPad - rightPad);
         const h = Math.max(220, vh - topPad - bottomPad);
         return Math.max(0.16, Math.min(1.15, Math.min(w / (2545 - 110), h / (1390 - 95)) * 0.96));
@@ -3506,7 +3514,9 @@
         const headerEl = document.querySelector('.top-header-shell');
         const headerBottom = headerEl ? Math.ceil(headerEl.getBoundingClientRect().bottom) + 12 : (isDesktop ? 114 : 116);
         const topPad = Math.max(isDesktop ? 114 : 112, headerBottom);
-        let bottomPad = isDesktop ? 86 : 74;
+        const filterEl = document.querySelector('.filter-bar-wrap');
+        const filterSpace = filterEl ? Math.ceil(vh - filterEl.getBoundingClientRect().top) + 12 : (isDesktop ? 86 : 96);
+        let bottomPad = Math.max(isDesktop ? 86 : 84, filterSpace);
         if (!isDesktop && drawerOpen && forSingleNode) {
           const cardH = detailDrawer.offsetHeight || Math.min(vh * 0.60, vh - 216);
           bottomPad = cardH + 22;
@@ -3527,8 +3537,9 @@
         const scale = Math.max(0.16, Math.min(1.15, Math.min(rect.width / boxW, rect.height / boxH) * 0.96));
         const cx = (minX + maxX) / 2;
         const cy = (minY + maxY) / 2;
+        const verticalAnchor = window.innerHeight > window.innerWidth ? 0.43 : 0.48;
         const tx = rect.left + rect.width / 2 - cx * scale;
-        const ty = rect.top + rect.height / 2 - cy * scale;
+        const ty = rect.top + rect.height * verticalAnchor - cy * scale;
 
         if (animated) {
           animateCameraTo(tx, ty, scale, 600);
@@ -3805,8 +3816,6 @@
         const accent = getNodeColor(node);
         const tint = getNodeTint(node);
 
-
-
         const relatedHtml = node.related.map(rid => {
           const rn = NODE_MAP[rid];
           if (!rn) return '';
@@ -3921,8 +3930,6 @@
             applyDecompHighlight(pinnedIdx);
           });
         });
-
-
 
         // 关联星宿飞掠跃迁 + 短暂流光金弧
         drawerContent.querySelectorAll('[data-jump]').forEach(btn => {
@@ -4228,6 +4235,7 @@
       buildTourDots();
       updateVisuals();
       fitToViewport(false);
+      window.requestAnimationFrame(() => fitToViewport(false));
 
       let resizeTimer = null;
       window.addEventListener('resize', () => {
