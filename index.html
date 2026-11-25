@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 苹果桌面全屏模式与专属八芒星图标 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="汉字星图">
+<link id="apple-icon" rel="apple-touch-icon">
+<script>
+(function(){
+  var c = document.createElement('canvas'); c.width = c.height = 180;
+  var x = c.getContext('2d');
+  var g = x.createRadialGradient(90, 90, 10, 90, 90, 110);
+  g.addColorStop(0, '#151d38'); g.addColorStop(1, '#070a14');
+  x.fillStyle = g; x.fillRect(0, 0, 180, 180);
+  x.strokeStyle = '#e8c87e'; x.lineCap = 'round';
+  for (var i = 0; i < 8; i++) {
+    var a = i * Math.PI / 4, r = (i % 2 === 0) ? 52 : 34;
+    x.lineWidth = (i % 2 === 0) ? 3.2 : 2;
+    x.beginPath(); x.moveTo(90, 90);
+    x.lineTo(90 + Math.cos(a) * r, 90 + Math.sin(a) * r); x.stroke();
+  }
+  x.fillStyle = '#f6dfa4'; x.beginPath(); x.arc(90, 90, 5.5, 0, Math.PI * 2); x.fill();
+  document.getElementById('apple-icon').href = c.toDataURL('image/png');
+})();
+</script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>一 · 十 · 木 · 米 汉字演化星图</title>
+  <style>
+    :root {
+      --bg-deep: #060a14;
+      --bg-mid: #0c1428;
+      --bg-edge: #080d1a;
+      --glass-bg: rgba(9, 15, 30, 0.78);
+      --glass-card: rgba(10, 14, 28, 0.94);
+      --glass-strong: rgba(8, 13, 27, 0.93);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --card-gold-border: rgba(218, 190, 134, 0.22);
+      --text-main: #f4f6fb;
+      --text-sub: #a6b4cd;
+      --text-muted: #70809e;
+      --gold: #f5c469;
+      --gold-soft: #fde68a;
+      --silver-cyan: #93b7c8;
+      --jade: #34d399;
+      --amber: #f59e0b;
+      --teal: #38bdf8;
+      --indigo: #818cf8;
+      --crimson: #e1526d;
+      --violet: #c084fc;
+      --cinnabar: #c83e37;
+      --font-serif: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", "SimSun", Georgia, serif;
+      --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at 63% 47%, var(--bg-mid) 0%, var(--bg-edge) 52%, var(--bg-deep) 100%);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    /* 背景星尘画布 */
+    #starfieldCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* 主交互星图舞台 */
+    #mapStage {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      cursor: grab;
+      overflow: hidden;
+    }
+    #mapStage.dragging {
+      cursor: grabbing;
+    }
+
+    #starMapSvg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* SVG 流光与呼吸动效 */
+    @keyframes flowDash {
+      to { stroke-dashoffset: -120; }
+    }
+    @keyframes slowFlowDash {
+      to { stroke-dashoffset: -96; }
+    }
+    @keyframes pulseRing {
+      0%, 100% { transform: scale(1); opacity: 0.42; }
+      50% { transform: scale(1.13); opacity: 0.14; }
+    }
+    @keyframes yiPulseTravel {
+      0% { stroke-dashoffset: 1680; opacity: 0.96; }
+      74% { opacity: 0.92; }
+      100% { stroke-dashoffset: 0; opacity: 0; }
+    }
+    @keyframes jumpArcFade {
+      0% { stroke-dashoffset: 420; opacity: 0; }
+      18% { opacity: 0.96; }
+      82% { stroke-dashoffset: 0; opacity: 0.86; }
+      100% { stroke-dashoffset: 0; opacity: 0; }
+    }
+
+    .axis-flow-line {
+      stroke-dasharray: 12 18;
+      animation: flowDash 4.2s linear infinite;
+    }
+    .meta-ruler-flow {
+      stroke-dasharray: 10 14;
+      animation: slowFlowDash 3.5s linear infinite;
+    }
+    .yi-pulse-path {
+      stroke-dasharray: 220 1680;
+      animation: yiPulseTravel 1.05s cubic-bezier(0.22, 0.8, 0.35, 1) forwards;
+    }
+    .jump-arc-path {
+      stroke-dasharray: 420;
+      animation: jumpArcFade 1.85s ease-out forwards;
+    }
+
+    .star-node {
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+    .star-node .node-core-ring {
+      transition: stroke-width 0.24s ease, fill 0.24s ease, filter 0.24s ease;
+    }
+    .star-node .node-halo-pulse {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: pulseRing 4.2s ease-in-out infinite;
+    }
+    .star-node .node-glyph {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      pointer-events: none;
+      dominant-baseline: central;
+      text-anchor: middle;
+    }
+    .star-node .node-note {
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      letter-spacing: 0.08em;
+      text-anchor: middle;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: rgba(6, 10, 20, 0.92);
+      stroke-width: 3.4px;
+      stroke-linejoin: round;
+      transition: opacity 0.3s ease, fill 0.3s ease;
+    }
+    .star-node .seal-text {
+      font-family: var(--font-serif);
+      font-size: 8.5px;
+      font-weight: 700;
+      fill: #fff6f2;
+      text-anchor: middle;
+      dominant-baseline: central;
+      pointer-events: none;
+    }
+
+    /* 七大外绕星域竖排柔色边款 */
+    .domain-marginalia {
+      pointer-events: none;
+      transition: opacity 0.22s ease-out;
+    }
+    .marginalia-text {
+      font-family: var(--font-serif);
+      font-size: 16.5px;
+      font-weight: 600;
+      paint-order: stroke;
+      stroke: rgba(6, 10, 20, 0.94);
+      stroke-width: 4.4px;
+      stroke-linejoin: round;
+    }
+
+    /* ======================== 顶部双行毛玻璃悬浮题签 ======================== */
+    .top-header-wrap {
+      position: fixed;
+      top: 10px;
+      left: 12px;
+      right: 12px;
+      z-index: 30;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .top-header {
+      width: 100%;
+      max-width: 780px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 8px 12px 9px;
+      box-shadow: 0 10px 34px rgba(0, 0, 0, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .header-row-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .starburst-emblem {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 6px rgba(245, 196, 105, 0.48));
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      color: #f8f4e8;
+      white-space: nowrap;
+    }
+
+    .brand-subtitle {
+      font-family: var(--font-serif);
+      font-size: 12.5px;
+      letter-spacing: 0.18em;
+      color: rgba(214, 224, 242, 0.56);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .header-row-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 0 1 118px;
+      min-width: 52px;
+      transition: flex-basis 0.25s ease;
+    }
+    .search-wrap:focus-within {
+      flex-basis: 172px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      height: 31px;
+      background: rgba(255, 255, 255, 0.045);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 0 7px 0 9px;
+      gap: 5px;
+      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+    .search-box:focus-within {
+      background: rgba(14, 22, 44, 0.92);
+      border-color: rgba(245, 196, 105, 0.52);
+      box-shadow: 0 0 0 2px rgba(245, 196, 105, 0.14);
+    }
+
+    .search-icon {
+      width: 13px;
+      height: 13px;
+      color: var(--text-sub);
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      width: 100%;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .search-clear {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      font-size: 11px;
+      line-height: 1;
+      padding: 0;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .search-clear.visible {
+      display: inline-flex;
+    }
+
+    /* 搜索下拉列表：未激活时严格隐匿 */
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      width: 248px;
+      max-width: calc(100vw - 28px);
+      max-height: 270px;
+      overflow-y: auto;
+      background: var(--glass-strong);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      padding: 6px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.56);
+      z-index: 70;
+      display: none;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .search-dropdown.open {
+      display: block;
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .search-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 9px;
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.16s ease;
+    }
+    .search-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .search-item-glyph {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 15px;
+      font-weight: 600;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+    .search-item-meta {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .search-item-note {
+      font-size: 13px;
+      color: #f2f5fb;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .search-item-domain {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+    .search-empty {
+      padding: 14px 10px;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .ctrl-pill {
+      height: 31px;
+      padding: 0 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.045);
+      color: #cbd5e1;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.22s ease;
+    }
+    .ctrl-pill:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .ctrl-pill .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #64748b;
+      transition: background 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .ctrl-pill.note-active {
+      background: rgba(245, 196, 105, 0.14);
+      border-color: rgba(245, 196, 105, 0.45);
+      color: #fce7b2;
+      box-shadow: 0 0 14px rgba(245, 196, 105, 0.15);
+    }
+    .ctrl-pill.note-active .pill-dot {
+      background: #f5c469;
+      box-shadow: 0 0 8px rgba(245, 196, 105, 0.9);
+    }
+    .ctrl-pill.note-off {
+      background: rgba(100, 116, 139, 0.12);
+      border-color: rgba(148, 163, 184, 0.18);
+      color: #8b99b0;
+    }
+
+    .ctrl-pill.meta-active {
+      background: linear-gradient(135deg, rgba(226, 232, 240, 0.18), rgba(192, 132, 252, 0.22));
+      border-color: rgba(226, 232, 240, 0.54);
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(192, 132, 252, 0.28);
+    }
+
+    .ctrl-pill.tour-active {
+      background: rgba(52, 211, 153, 0.16);
+      border-color: rgba(52, 211, 153, 0.48);
+      color: #c8fce7;
+      box-shadow: 0 0 14px rgba(52, 211, 153, 0.2);
+    }
+
+    /* ======================== 「一」元标尺诗意浮条 ======================== */
+    .meta-banner {
+      position: fixed;
+      top: 102px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      z-index: 28;
+      max-width: calc(100vw - 24px);
+      background: rgba(11, 17, 35, 0.9);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(226, 232, 240, 0.34);
+      border-radius: 999px;
+      padding: 7px 10px 7px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 22px rgba(192, 132, 252, 0.18);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.26s ease, transform 0.26s ease, visibility 0.26s ease;
+    }
+    .meta-banner.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .meta-banner-star {
+      color: #f5c469;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .meta-banner-text {
+      font-family: var(--font-serif);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      color: #edf2ff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta-banner-text .hl-gold {
+      color: #f8d483;
+      font-weight: 600;
+    }
+    .meta-banner-text .hl-violet {
+      color: #d8b4fe;
+      font-weight: 600;
+    }
+    .meta-banner-close {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      font-size: 15px;
+      line-height: 1;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+    .meta-banner-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    /* ======================== 右侧独立竖向缩放胶囊 ======================== */
+    .zoom-capsule {
+      position: fixed;
+      right: 16px;
+      bottom: 84px;
+      z-index: 25;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42);
+      transition:
+        right 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.28s ease,
+        filter 0.28s ease;
+    }
+    .zoom-capsule.drawer-shifted {
+      right: 422px;
+    }
+
+    .zoom-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: #dce5f5;
+      font-size: 17px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+    .zoom-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+    .zoom-btn.reset-btn {
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      height: 30px;
+      color: #b7c4dc;
+    }
+    .zoom-divider {
+      width: 18px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* ======================== 底部星域筛选导航栏 ======================== */
+    .filter-dock-wrap {
+      position: fixed;
+      bottom: 14px;
+      left: 0;
+      right: 0;
+      z-index: 25;
+      display: flex;
+      justify-content: center;
+      padding: 0 14px;
+      pointer-events: none;
+      transition: opacity 0.28s ease, filter 0.28s ease;
+    }
+
+    .filter-dock {
+      position: relative;
+      max-width: 100%;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 999px;
+      padding: 5px 8px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.46);
+      pointer-events: auto;
+      overflow: hidden;
+    }
+
+    .filter-scroll {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filter-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-pill {
+      flex-shrink: 0;
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #b6c3db;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .filter-pill:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+    .filter-pill.active {
+      background: rgba(245, 196, 105, 0.16);
+      border-color: rgba(245, 196, 105, 0.44);
+      color: #fef3d6;
+      font-weight: 500;
+    }
+    .filter-swatch {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ======================== 方案三 · 阅读态背景压暗锁定 ======================== */
+    body.card-reading .filter-dock-wrap,
+    body.card-reading .zoom-capsule {
+      opacity: 0.14;
+      filter: blur(0.8px);
+      pointer-events: none;
+    }
+    body.card-reading .filter-dock {
+      pointer-events: none;
+    }
+
+    /* ======================== 九章漫游浮卡 ======================== */
+    .tour-card {
+      position: fixed;
+      left: 50%;
+      bottom: 72px;
+      transform: translateX(-50%) translateY(18px);
+      width: 520px;
+      max-width: calc(100vw - 24px);
+      background: var(--glass-strong);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(245, 196, 105, 0.32);
+      border-radius: 18px;
+      padding: 15px 18px 14px;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.58), 0 0 26px rgba(245, 196, 105, 0.1);
+      z-index: 32;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
+    }
+    .tour-card.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .tour-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .tour-chapter-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tour-numeral {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(245, 196, 105, 0.18);
+      border: 1px solid rgba(245, 196, 105, 0.5);
+      color: #fde68a;
+      font-family: var(--font-serif);
+      font-size: 12.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tour-title {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 15.5px;
+      font-weight: 600;
+      color: #faf6eb;
+      letter-spacing: 0.05em;
+    }
+    .tour-dots {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tour-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.22s ease;
+    }
+    .tour-dot.active {
+      width: 16px;
+      border-radius: 999px;
+      background: #f5c469;
+    }
+
+    .tour-body {
+      margin: 0 0 12px;
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: #d6dff0;
+    }
+
+    .tour-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .tour-nav-group {
+      display: flex;
+      align-items: center;
+      
