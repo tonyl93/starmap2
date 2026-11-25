@@ -1,0 +1,4316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="汉字星图" />
+  <meta name="theme-color" content="#050914" />
+  <title>一 · 十 · 木 · 米 · 汉字演化星图</title>
+  <link id="apple-touch-icon" rel="apple-touch-icon" sizes="180x180" />
+  <link id="app-favicon" rel="icon" type="image/png" />
+  <script>
+    /* 动态生成 180×180 深靛夜空鎏金八芒星桌面图标（零外部依赖） */
+    (function () {
+      try {
+        var c = document.createElement('canvas');
+        c.width = 180;
+        c.height = 180;
+        var x = c.getContext('2d');
+        if (!x) return;
+
+        var g = x.createRadialGradient(90, 86, 12, 90, 90, 116);
+        g.addColorStop(0, '#162244');
+        g.addColorStop(0.55, '#0b1328');
+        g.addColorStop(1, '#050914');
+        x.fillStyle = g;
+        x.fillRect(0, 0, 180, 180);
+
+        /* 外圈极细星轨光环 */
+        x.beginPath();
+        x.arc(90, 90, 68, 0, Math.PI * 2);
+        x.strokeStyle = 'rgba(245, 196, 105, 0.22)';
+        x.lineWidth = 1.4;
+        x.stroke();
+
+        /* 中心柔和星晕 */
+        var glow = x.createRadialGradient(90, 90, 4, 90, 90, 46);
+        glow.addColorStop(0, 'rgba(245, 196, 105, 0.34)');
+        glow.addColorStop(1, 'rgba(245, 196, 105, 0)');
+        x.fillStyle = glow;
+        x.beginPath();
+        x.arc(90, 90, 46, 0, Math.PI * 2);
+        x.fill();
+
+        /* 四向纤细长芒菱星 */
+        x.beginPath();
+        x.moveTo(90, 26);
+        x.lineTo(96.5, 83.5);
+        x.lineTo(154, 90);
+        x.lineTo(96.5, 96.5);
+        x.lineTo(90, 154);
+        x.lineTo(83.5, 96.5);
+        x.lineTo(26, 90);
+        x.lineTo(83.5, 83.5);
+        x.closePath();
+        x.fillStyle = 'rgba(245, 196, 105, 0.22)';
+        x.fill();
+        x.strokeStyle = '#f5c469';
+        x.lineWidth = 2.6;
+        x.lineJoin = 'round';
+        x.stroke();
+
+        /* 四隅斜向短芒 */
+        x.strokeStyle = 'rgba(245, 196, 105, 0.88)';
+        x.lineWidth = 2.2;
+        x.lineCap = 'round';
+        var corners = [
+          [52, 52, 74, 74],
+          [128, 52, 106, 74],
+          [52, 128, 74, 106],
+          [128, 128, 106, 106]
+        ];
+        for (var i = 0; i < corners.length; i++) {
+          x.beginPath();
+          x.moveTo(corners[i][0], corners[i][1]);
+          x.lineTo(corners[i][2], corners[i][3]);
+          x.stroke();
+        }
+
+        /* 中心鎏金微珠 */
+        x.beginPath();
+        x.arc(90, 90, 6.2, 0, Math.PI * 2);
+        x.fillStyle = '#fff3d1';
+        x.fill();
+
+        var url = c.toDataURL('image/png');
+        var appleIcon = document.getElementById('apple-touch-icon');
+        var favIcon = document.getElementById('app-favicon');
+        if (appleIcon) appleIcon.href = url;
+        if (favIcon) favIcon.href = url;
+      } catch (e) {}
+    })();
+  </script>
+  <style>
+    /* =========================================================================
+       一、全局深靛水墨星空色板与典雅字族（100% 纯内联 CSS，零外部依赖）
+       ========================================================================= */
+    :root {
+      --bg-deep: #050914;
+      --bg-mid: #0b1326;
+      --panel-bg: rgba(8, 14, 28, 0.84);
+      --panel-strong: rgba(7, 12, 24, 0.95);
+      --card-bg: rgba(10, 14, 28, 0.94);
+      --border-soft: rgba(255, 255, 255, 0.12);
+      --border-gold: rgba(245, 196, 105, 0.42);
+      --card-gold-border: rgba(218, 190, 134, 0.22);
+      --text-main: #f4efe6;
+      --text-sub: #b7c3d8;
+      --text-muted: #7c89a3;
+
+      /* 星域专属色板 */
+      --c-core: #f5c469;       /* 演化主脉 · 鎏金 */
+      --c-calib: #9fd8ea;      /* 知行校准 · 银青微光 */
+      --c-wood: #4ade80;       /* 木系根基 · 翠玉青碧 */
+      --c-wood-warn: #e07a5f;  /* 根系暗礁 · 赭橘 */
+      --c-craft: #fbbf24;      /* 形态打磨 · 暖琥珀 */
+      --c-delivery: #38bdf8;   /* 价值交付 · 天青碧 */
+      --c-moat: #818cf8;       /* 长期壁垒 · 沉静蓝紫 */
+      --c-shadow: #f43f5e;     /* 系统暗面 · 暗绛红 */
+      --c-leap: #c084fc;       /* 高维化境 · 紫金冠冕 */
+      --c-vermilion: #c23b2b;  /* 繁体遗珠 · 中国朱砂 */
+
+      --font-serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", Georgia, serif;
+      --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: radial-gradient(circle at 64% 44%, #111d38 0%, #0b1326 44%, #050914 100%);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    /* 底层轻缓呼吸星尘微粒 Canvas */
+    #bgCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* 交互式星图 SVG 主舞台 */
+    #mapStage {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      cursor: grab;
+      touch-action: none;
+    }
+    #mapStage.is-dragging {
+      cursor: grabbing;
+    }
+    #mapSvg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* =========================================================================
+       二、星宿节点、星注、竖排柔色边款与流光动效
+       ========================================================================= */
+    .star-node {
+      cursor: pointer;
+      transition: opacity 0.36s ease;
+    }
+    .star-node .node-body {
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .star-node:hover .node-body {
+      transform: scale(1.09);
+    }
+
+    .star-glyph {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    .star-note-group {
+      pointer-events: none;
+      transition: opacity 0.34s cubic-bezier(0.22, 1, 0.36, 1), transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .star-note-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .star-note-hidden {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    .star-note-text {
+      font-family: var(--font-sans);
+      paint-order: stroke;
+      stroke: rgba(5, 9, 20, 0.94);
+      stroke-width: 3.4px;
+      stroke-linejoin: round;
+      transition: fill 0.28s ease;
+    }
+
+    /* 七大外绕星域：竖排柔色边款 + 缩放呼吸联动 */
+    .domain-marginalia {
+      pointer-events: none;
+      transition: opacity 0.22s ease-out;
+    }
+    .marginalia-text {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      paint-order: stroke;
+      stroke: rgba(5, 9, 20, 0.94);
+      stroke-width: 4.2px;
+      stroke-linejoin: round;
+    }
+
+    @keyframes flowDash {
+      from { stroke-dashoffset: 36; }
+      to { stroke-dashoffset: 0; }
+    }
+    .flow-line {
+      stroke-dasharray: 6 6;
+      animation: flowDash 2.6s linear infinite;
+    }
+
+    @keyframes metaFlow {
+      from { stroke-dashoffset: 64; }
+      to { stroke-dashoffset: 0; }
+    }
+    .meta-flow-line {
+      stroke-dasharray: 10 6;
+      animation: metaFlow 2.1s linear infinite;
+    }
+
+    /* 点击「一」沿演化主脉向右轻漾约 1.1 秒金色流光脉冲 */
+    @keyframes yiPulseTravel {
+      0% { stroke-dashoffset: 1750; opacity: 0.96; }
+      74% { opacity: 0.92; }
+      100% { stroke-dashoffset: 0; opacity: 0; }
+    }
+    .yi-pulse-path {
+      stroke-dasharray: 240 1750;
+      animation: yiPulseTravel 1.1s cubic-bezier(0.22, 0.8, 0.35, 1) forwards;
+    }
+
+    @keyframes pulseAura {
+      0%, 100% { opacity: 0.34; transform: scale(1); }
+      50% { opacity: 0.68; transform: scale(1.05); }
+    }
+    .mi-pulse {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: pulseAura 4.8s ease-in-out infinite;
+    }
+
+    @keyframes jumpArcFade {
+      0% { opacity: 0.98; stroke-width: 3.4; }
+      65% { opacity: 0.85; stroke-width: 2.6; }
+      100% { opacity: 0; stroke-width: 1.4; }
+    }
+    .jump-arc-flash {
+      animation: jumpArcFade 1.85s ease-out forwards;
+    }
+
+    @keyframes strokeGlowPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.65; }
+    }
+    .decomp-stroke {
+      transition: opacity 0.22s ease, stroke-width 0.22s ease;
+      cursor: pointer;
+    }
+    .decomp-stroke-active {
+      animation: strokeGlowPulse 1.4s ease-in-out infinite;
+    }
+
+    /* =========================================================================
+       三、顶部双行毛玻璃悬浮栏（适配 iPhone 刘海安全区，375px 窄屏零裁切）
+       ========================================================================= */
+    .top-header-shell {
+      position: fixed;
+      top: calc(14px + env(safe-area-inset-top, 0px));
+      left: 20px;
+      z-index: 32;
+      width: min(500px, calc(100vw - 40px));
+      padding: 9px 12px 10px;
+      border-radius: 18px;
+      background: linear-gradient(155deg, rgba(10, 17, 34, 0.86), rgba(6, 11, 24, 0.82));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(245, 196, 105, 0.22);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* 第一行：星图题签（左八芒星芒 + 主标题，右淡雅宋体副标） */
+    .header-row-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.075);
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .brand-star-svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 6px rgba(245, 196, 105, 0.45));
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 15.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: #fdf6e7;
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-family: var(--font-serif);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      color: rgba(224, 214, 194, 0.56);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* 第二行：零裁切控制栏（左无字小搜索框 + 右三联毛玻璃胶囊） */
+    .header-row-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex-shrink: 1;
+      min-width: 0;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      height: 32px;
+      width: 112px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.055);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      overflow: hidden;
+      transition: width 0.26s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+    }
+    .search-box:focus-within {
+      width: 146px;
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(245, 196, 105, 0.55);
+      box-shadow: 0 0 14px rgba(245, 196, 105, 0.14);
+    }
+
+    .search-icon {
+      width: 13px;
+      height: 13px;
+      color: #8f9db6;
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-size: 12.5px;
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      font-family: var(--font-sans);
+    }
+
+    .search-clear {
+      display: none;
+      background: none;
+      border: none;
+      color: #8f9db6;
+      cursor: pointer;
+      padding: 1px 2px;
+      line-height: 1;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .search-clear.visible {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .search-clear:hover {
+      color: #fff;
+    }
+
+    /* 搜索候选下拉浮层 */
+    .search-dropdown {
+      position: absolute;
+      top: calc(100% + 9px);
+      left: 0;
+      width: 276px;
+      max-height: 290px;
+      overflow-y: auto;
+      background: var(--panel-strong);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(245, 196, 105, 0.24);
+      border-radius: 16px;
+      padding: 6px;
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.72);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 65;
+    }
+    .search-dropdown.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .search-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.16s ease;
+    }
+    .search-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .search-item-glyph {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .search-item-meta {
+      min-width: 0;
+      flex: 1;
+    }
+    .search-item-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+    }
+    .search-item-note {
+      color: #f8e7c2;
+      font-weight: 500;
+    }
+    .search-item-domain {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+    .search-item-tag {
+      font-size: 11px;
+      color: #8f9bb3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+    .search-empty {
+      padding: 16px 10px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* 三联毛玻璃胶囊按钮 */
+    .control-capsules {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .capsule-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      height: 32px;
+      padding: 0 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.055);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      color: #dce4f2;
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.22s ease;
+      font-family: var(--font-sans);
+    }
+    .capsule-btn:hover {
+      background: rgba(255, 255, 255, 0.11);
+      border-color: rgba(245, 196, 105, 0.45);
+      color: #fef3d6;
+    }
+    .capsule-btn:active {
+      transform: scale(0.96);
+    }
+
+    .capsule-btn.is-active {
+      background: linear-gradient(135deg, rgba(245, 196, 105, 0.24), rgba(245, 196, 105, 0.09));
+      border-color: rgba(245, 196, 105, 0.58);
+      color: #fde8b4;
+      box-shadow: 0 0 16px rgba(245, 196, 105, 0.18);
+    }
+
+    .capsule-btn.is-muted {
+      color: #7d8ba3;
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #616f88;
+      transition: all 0.24s ease;
+      flex-shrink: 0;
+    }
+    .capsule-btn.is-active .status-dot {
+      background: var(--c-core);
+      box-shadow: 0 0 8px var(--c-core);
+    }
+
+    /* =========================================================================
+       四、「一」元标尺诗意浮条（默认严格隐藏）
+       ========================================================================= */
+    .meta-banner {
+      position: fixed;
+      top: calc(112px + env(safe-area-inset-top, 0px));
+      left: 20px;
+      z-index: 28;
+      max-width: min(500px, calc(100vw - 24px));
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-radius: 16px;
+      background: linear-gradient(125deg, rgba(13, 21, 42, 0.94), rgba(26, 20, 48, 0.94));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(245, 196, 105, 0.48);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.58), 0 0 22px rgba(245, 196, 105, 0.14);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .meta-banner.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .meta-banner-star {
+      color: var(--c-core);
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .meta-banner-text {
+      font-family: var(--font-serif);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: #fdf2d6;
+      line-height: 1.5;
+    }
+    .meta-banner-text .hl-gold {
+      color: var(--c-core);
+      font-weight: 700;
+    }
+    .meta-banner-text .hl-purple {
+      color: var(--c-leap);
+      font-weight: 700;
+    }
+    .meta-banner-close {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #d6deec;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.18s ease;
+    }
+    .meta-banner-close:hover {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+    }
+
+    /* =========================================================================
+       五、右侧独立竖向缩放胶囊
+       ========================================================================= */
+    .zoom-capsule {
+      position: fixed;
+      right: 20px;
+      bottom: 84px;
+      z-index: 26;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 5px;
+      gap: 4px;
+      border-radius: 999px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.48);
+      transition:
+        right 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.28s ease,
+        filter 0.28s ease;
+    }
+    .zoom-capsule.drawer-shifted {
+      right: 432px;
+    }
+    .zoom-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: #dbe3f0;
+      font-size: 17px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease, transform 0.14s ease;
+      font-family: var(--font-sans);
+    }
+    .zoom-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--c-core);
+    }
+    .zoom-btn:active {
+      transform: scale(0.92);
+    }
+    .zoom-btn.reset-btn {
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      height: 34px;
+      color: var(--text-sub);
+    }
+    .zoom-divider {
+      width: 20px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* =========================================================================
+       六、底部星域导航栏
+       ========================================================================= */
+    .filter-bar-wrap {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 25;
+      max-width: calc(100vw - 40px);
+      pointer-events: auto;
+      transition: opacity 0.28s ease, filter 0.28s ease;
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filter-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #a9b6cb;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      font-family: var(--font-sans);
+    }
+    .filter-pill:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: #f3efe6;
+    }
+    .filter-pill.active {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--pill-border, rgba(245, 196, 105, 0.5));
+      color: #fff8ea;
+      box-shadow: 0 0 14px var(--pill-glow, rgba(245, 196, 105, 0.16));
+    }
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* =========================================================================
+       方案三 · 阅读态背景压暗与防误触锁定
+       ========================================================================= */
+    body.card-reading .filter-bar-wrap,
+    body.card-reading .zoom-capsule {
+      opacity: 0.14;
+      filter: blur(0.8px);
+      pointer-events: none;
+    }
+    body.card-reading .filter-bar {
+      pointer-events: none;
+    }
+
+    /* =========================================================================
+       七、「壹至玖」九章漫游导览卡（默认严格隐藏）
+       ========================================================================= */
+    .tour-card {
+      position: fixed;
+      left: 20px;
+      bottom: 84px;
+      width: 360px;
+      max-width: calc(100vw - 88px);
+      z-index: 29;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: var(--panel-strong);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(245, 196, 105, 0.36);
+      box-shadow: 0 18px 46px rgba(0, 0, 0, 0.64);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(16px);
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .tour-card.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .tour-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .tour-chapter-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tour-numeral {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: rgba(245, 196, 105, 0.16);
+      border: 1px solid rgba(245, 196, 105, 0.45);
+      color: var(--c-core);
+      font-family: var(--font-serif);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .tour-title {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 15px;
+      font-weight: 700;
+      color: #fdf4df;
+      letter-spacing: 0.06em;
+    }
+    .tour-close {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #9aa7bd;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.18s ease;
+    }
+    .tour-close:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+    }
+    .tour-body {
+      margin: 0 0 14px;
+      font-size: 13px;
+      line-height: 1.72;
+      color: #cbd5e6;
+    }
+    .tour-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .tour-dots {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .tour-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.24s ease;
+    }
+    .tour-dot.active {
+      width: 18px;
+      background: var(--c-core);
+    }
+    .tour-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tour-nav-btn {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+      color: #dce4f2;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      font-family: var(--font-sans);
+    }
+    .tour-nav-btn:hover:not(:disabled) {
+      background: rgba(245, 196, 105, 0.18);
+      border-color: rgba(245, 196, 105, 0.45);
+      color: #fef2d2;
+    }
+    .tour-nav-btn:disabled {
+      opacity: 0.36;
+      cursor: not-allowed;
+    }
+    .tour-nav-btn.primary {
+      background: rgba(245, 196, 105, 0.2);
+      border-color: rgba(245, 196, 105, 0.5);
+      color: #fde8b4;
+    }
+
+    /* =========================================================================
+       八、星宿档案 · 悬浮星笺（居中极小星饰 · 沉静毛玻璃 · 内底缘柔光渐隐）
+       ========================================================================= */
+    .detail-drawer {
+      position: fixed;
+      top: calc(16px + env(safe-area-inset-top, 0px));
+      right: 18px;
+      bottom: 84px;
+      width: 400px;
+      max-width: calc(100vw - 36px);
+      z-index: 60;
+      border-radius: 22px;
+      background: var(--card-bg);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid var(--card-gold-border);
+      box-shadow:
+        0 20px 54px rgba(0, 0, 0, 0.7),
+        0 0 28px rgba(245, 196, 105, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateX(30px) scale(0.985);
+      transition:
+        transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.28s ease,
+        visibility 0.28s ease;
+    }
+    .detail-drawer.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateX(0) scale(1);
+    }
+
+    /* 顶栏整合：顶缘居中极小淡星金星饰「· ✦ ·」 + 紧凑标题关闭栏 */
+    .drawer-header {
+      flex-shrink: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.075);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0));
+    }
+
+    .drawer-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 0 1px;
+      font-size: 9.5px;
+      line-height: 1;
+      letter-spacing: 0.44em;
+      padding-left: 0.44em;
+      color: rgba(245, 196, 105, 0.58);
+      text-shadow: 0 0 8px rgba(245, 196, 105, 0.32);
+      pointer-events: none;
+    }
+
+    .drawer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3px 16px 8px;
+    }
+    .drawer-top-label {
+      font-family: var(--font-serif);
+      font-size: 11.5px;
+      letter-spacing: 0.24em;
+      color: rgba(203, 215, 236, 0.78);
+    }
+    .drawer-close-btn {
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+      color: #dbe4f4;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease;
+    }
+    .drawer-close-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(245, 196, 105, 0.38);
+      color: #fff;
+    }
+
+    /* 内容滚动区 + 内底缘 36px 柔光渐隐遮罩 */
+    .drawer-body-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .drawer-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px 18px 42px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+    .drawer-scroll::-webkit-scrollbar,
+    .search-dropdown::-webkit-scrollbar {
+      width: 4px;
+    }
+    .drawer-scroll::-webkit-scrollbar-thumb,
+    .search-dropdown::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+    }
+
+    .drawer-bottom-fade {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 36px;
+      pointer-events: none;
+      z-index: 5;
+      background: linear-gradient(
+        to bottom,
+        rgba(10, 14, 28, 0) 0%,
+        rgba(10, 14, 28, 0.86) 68%,
+        rgba(10, 14, 28, 0.99) 100%
+      );
+    }
+
+    .drawer-hero {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .hero-glyph-box {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      border-radius: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 35px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .trad-seal-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: var(--c-vermilion);
+      border: 1px solid #f4a498;
+      color: #fff7ee;
+      font-family: var(--font-serif);
+      font-size: 10.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(194, 59, 43, 0.52);
+    }
+    .hero-info {
+      min-width: 0;
+      flex: 1;
+    }
+    .hero-badges {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .hero-pinyin {
+      font-size: 12.5px;
+      color: #dbe4f3;
+      font-weight: 500;
+    }
+    .hero-note-pill {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #fcebc4;
+      letter-spacing: 0.05em;
+    }
+    .hero-domain-pill {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 500;
+    }
+    .hero-essence {
+      margin: 6px 0 0;
+      font-family: var(--font-serif);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.48;
+      color: #faf6ed;
+    }
+
+    .info-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .section-heading {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #d7e0ef;
+    }
+    .section-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .section-text {
+      margin: 0;
+      font-size: 13.2px;
+      line-height: 1.74;
+      color: #b7c3d8;
+    }
+
+    .formula-box {
+      padding: 9px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.042);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      font-size: 12.3px;
+      color: #e9dec5;
+      line-height: 1.6;
+    }
+
+    /* 观照自省金句卡 */
+    .practice-card {
+      padding: 13px 15px;
+      border-radius: 15px;
+      border: 1px solid rgba(245, 196, 105, 0.28);
+    }
+    .practice-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      margin-bottom: 6px;
+    }
+    .practice-quote {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-size: 13.8px;
+      line-height: 1.7;
+      color: #fef6e4;
+    }
+
+    /* 米字格交互笔画解构器 */
+    .decomp-card {
+      padding: 13px;
+      border-radius: 15px;
+      background: rgba(5, 10, 22, 0.76);
+      border: 1px solid rgba(245, 196, 105, 0.22);
+    }
+    .decomp-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .decomp-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #f5d899;
+    }
+    .decomp-hint {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+    .decomp-grid-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .decomp-svg-box {
+      width: 108px;
+      height: 108px;
+      border-radius: 12px;
+      background: rgba(13, 20, 38, 0.92);
+      border: 1px solid rgba(245, 196, 105, 0.25);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .decomp-legend {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .decomp-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      padding: 5px 8px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .decomp-item:hover,
+    .decomp-item.active {
+      background: rgba(245, 196, 105, 0.12);
+      border-color: rgba(245, 196, 105, 0.42);
+    }
+    .decomp-swatch {
+      width: 8.5px;
+      height: 8.5px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .decomp-item-text {
+      font-size: 11.4px;
+      line-height: 1.45;
+      color: #d6deed;
+    }
+    .decomp-item-text strong {
+      color: #fef3d4;
+      font-weight: 600;
+    }
+
+    /* 简繁双镜三栏对照卡 */
+    .mirror-card {
+      padding: 13px;
+      border-radius: 15px;
+      background: linear-gradient(155deg, rgba(24, 20, 44, 0.8), rgba(11, 17, 33, 0.88));
+      border: 1px solid rgba(192, 132, 252, 0.3);
+    }
+    .mirror-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .mirror-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #e4c6ff;
+    }
+    .mirror-pair {
+      font-family: var(--font-serif);
+      font-size: 13px;
+      color: #f5c469;
+      letter-spacing: 0.1em;
+    }
+    .mirror-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .mirror-col {
+      padding: 8.5px 9.5px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .mirror-col-head {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .mirror-char {
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 700;
+      color: #fdf6e7;
+    }
+    .mirror-tag {
+      font-size: 10px;
+      color: #9ba8bf;
+    }
+    .mirror-desc {
+      margin: 0;
+      font-size: 11.4px;
+      line-height: 1.54;
+      color: #b7c3d8;
+    }
+    .mirror-synth {
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(245, 196, 105, 0.09);
+      border-left: 2.5px solid var(--c-core);
+      font-size: 11.8px;
+      line-height: 1.6;
+      color: #f6e7c5;
+    }
+    .mirror-synth-label {
+      color: var(--c-core);
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    /* 关联星宿标签 */
+    .related-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .related-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5.5px;
+      padding: 5.5px 10.5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e4eaf5;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      font-family: var(--font-sans);
+    }
+    .related-chip:hover {
+      background: rgba(245, 196, 105, 0.16);
+      border-color: rgba(245, 196, 105, 0.48);
+      transform: translateY(-1px);
+    }
+    .related-chip-glyph {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .related-chip-note {
+      font-size: 11px;
+      color: #9ba8bf;
+    }
+
+    /* =========================================================================
+       九、桌面端悬停浮卡
+       ========================================================================= */
+    .hover-tooltip {
+      position: fixed;
+      z-index: 50;
+      max-width: 244px;
+      padding: 10px 13px;
+      border-radius: 14px;
+      background: rgba(7, 12, 25, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(245, 196, 105, 0.28);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.58);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.16s ease, transform 0.16s ease;
+    }
+    .hover-tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .tt-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .tt-glyph {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .tt-note {
+      font-size: 12px;
+      font-weight: 600;
+      color: #fcebc4;
+    }
+    .tt-seal {
+      font-family: var(--font-serif);
+      font-size: 10px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: var(--c-vermilion);
+      color: #fff7ee;
+      display: none;
+    }
+    .tt-seal.show {
+      display: inline-block;
+    }
+    .tt-tag {
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: #b4c0d6;
+    }
+
+    /* =========================================================================
+       十、移动端响应式适配（刘海安全区 + 四边悬空悬浮星笺 + 375px 零裁切）
+       ========================================================================= */
+    @media (max-width: 820px) {
+      .top-header-shell {
+        top: calc(10px + env(safe-area-inset-top, 0px));
+        left: 10px;
+        right: 10px;
+        width: auto;
+        padding: 8px 10px 9px;
+        border-radius: 16px;
+        gap: 7px;
+      }
+
+      .meta-banner {
+        top: calc(102px + env(safe-area-inset-top, 0px));
+        left: 10px;
+        right: 10px;
+        max-width: none;
+        padding: 8px 12px;
+      }
+      .meta-banner-text {
+        font-size: 12px;
+      }
+
+      /* 移动端底部导航栏：贴底全宽单行平滑横滑 + 左右渐隐遮罩 */
+      .filter-bar-wrap {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        transform: none;
+        max-width: 100%;
+        background: linear-gradient(to top, rgba(5, 9, 20, 0.96) 66%, rgba(5, 9, 20, 0));
+        padding: 8px 0 calc(10px + env(safe-area-inset-bottom, 0px));
+      }
+      .filter-bar {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        background: rgba(8, 14, 28, 0.92);
+        padding: 7px 14px;
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 18px, #000 calc(100% - 18px), transparent 100%);
+        mask-image: linear-gradient(to right, transparent 0%, #000 18px, #000 calc(100% - 18px), transparent 100%);
+      }
+
+      /* 移动端右侧独立竖向缩放胶囊 */
+      .zoom-capsule {
+        right: 12px;
+        bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+      }
+      .zoom-capsule.drawer-shifted {
+        right: 12px;
+      }
+      .zoom-btn {
+        width: 34px;
+        height: 34px;
+      }
+
+      /* 移动端九章漫游卡 */
+      .tour-card {
+        left: 12px;
+        right: 64px;
+        width: auto;
+        max-width: none;
+        bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+        padding: 13px 14px;
+      }
+      .tour-body {
+        font-size: 12.5px;
+        margin-bottom: 11px;
+      }
+
+      /* 移动端四边完整悬空「悬浮星笺」 */
+      .detail-drawer {
+        top: auto;
+        left: 14px;
+        right: 14px;
+        bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+        width: auto;
+        max-width: none;
+        height: auto;
+        max-height: 62vh;
+        border-radius: 22px;
+        background: rgba(10, 14, 28, 0.94);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        border: 1px solid rgba(218, 190, 134, 0.22);
+        z-index: 60;
+        box-shadow:
+          0 22px 54px rgba(0, 0, 0, 0.74),
+          0 0 28px rgba(245, 196, 105, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        transform: translateY(34px) scale(0.98);
+      }
+      .detail-drawer.open {
+        transform: translateY(0) scale(1);
+      }
+      .drawer-ornament {
+        padding: 6px 0 1px;
+        font-size: 9px;
+      }
+      .drawer-top {
+        padding: 2px 15px 7px;
+      }
+      .drawer-scroll {
+        padding: 13px 15px 40px;
+        gap: 14px;
+      }
+      .hero-glyph-box {
+        width: 58px;
+        height: 58px;
+        border-radius: 15px;
+        font-size: 31px;
+      }
+      .hero-essence {
+        font-size: 14px;
+      }
+      .decomp-grid-wrap {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .decomp-svg-box {
+        margin: 0 auto;
+      }
+
+      .hover-tooltip {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .top-header-shell {
+        top: calc(8px + env(safe-area-inset-top, 0px));
+        left: 8px;
+        right: 8px;
+        padding: 7px 9px 8px;
+        gap: 6px;
+      }
+      .header-row-title {
+        padding-bottom: 6px;
+      }
+      .brand-star-svg {
+        width: 19px;
+        height: 19px;
+      }
+      .brand-title {
+        font-size: 14px;
+        letter-spacing: 0.13em;
+      }
+      .brand-subtitle {
+        font-size: 11px;
+        letter-spacing: 0.16em;
+      }
+      .header-row-controls {
+        gap: 5px;
+      }
+      .search-box {
+        width: 66px;
+        height: 29px;
+        padding: 0 7px;
+        gap: 4px;
+      }
+      .search-box:focus-within {
+        width: 92px;
+      }
+      .search-icon {
+        width: 12px;
+        height: 12px;
+      }
+      /* 防 iOS 点击输入框自动缩放网页 */
+      .search-input {
+        font-size: 16px;
+        transform: scale(0.75);
+        transform-origin: left center;
+        width: 133%;
+      }
+      .search-dropdown {
+        width: min(272px, calc(100vw - 24px));
+      }
+      .control-capsules {
+        gap: 4.5px;
+      }
+      .capsule-btn {
+        height: 29px;
+        padding: 0 8px;
+        font-size: 11.5px;
+        letter-spacing: 0.01em;
+        gap: 3.5px;
+      }
+      .status-dot {
+        width: 5px;
+        height: 5px;
+      }
+      .meta-banner {
+        top: calc(94px + env(safe-area-inset-top, 0px));
+        left: 8px;
+        right: 8px;
+      }
+    }
+
+    /* 超窄屏（如 360px 以下）再做 1px 微收紧，确保永不裁切 */
+    @media (max-width: 365px) {
+      .search-box {
+        width: 58px;
+      }
+      .search-box:focus-within {
+        width: 78px;
+      }
+      .capsule-btn {
+        padding: 0 6.5px;
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 底层轻缓呼吸微尘星空 Canvas -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- 交互式星图 SVG 主画布 -->
+  <div id="mapStage">
+    <svg id="mapSvg" xmlns="http://www.w3.org/2000/svg" aria-label="一十木米汉字演化星图">
+      <defs>
+        <filter id="glowGold" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="7" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id="glowSoft" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="4" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id="marginaliaShadow" x="-60%" y="-25%" width="220%" height="150%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3.2" flood-color="#040710" flood-opacity="0.95" />
+        </filter>
+
+        <!-- 各星域柔和星云色温晕染 -->
+        <radialGradient id="miSupernova" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f5c469" stop-opacity="0.32" />
+          <stop offset="48%" stop-color="#c084fc" stop-opacity="0.1" />
+          <stop offset="100%" stop-color="#050914" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="calibAura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#9fd8ea" stop-opacity="0.13" />
+          <stop offset="100%" stop-color="#050914" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="woodAura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#4ade80" stop-opacity="0.17" />
+          <stop offset="62%" stop-color="#4ade80" stop-opacity="0.04" />
+          <stop offset="100%" stop-color="#050914" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="craftAura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.11" />
+          <stop offset="100%" stop-color="#050914" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="deliveryAura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.12" />
+          <stop offset="100%" stop-color="#050914" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="moatAura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#818cf8" stop-opacity="0.12" />
+          <stop offset="100%" stop-color="#050914" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="shadowAura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.1" />
+          <stop offset="100%" stop-color="#050914" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="leapAura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#c084fc" stop-opacity="0.14" />
+          <stop offset="100%" stop-color="#050914" stop-opacity="0" />
+        </radialGradient>
+
+        <!-- 「十」垂直截流清光柱与水平流光渐变 -->
+        <linearGradient id="shiPillarGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f5c469" stop-opacity="0" />
+          <stop offset="30%" stop-color="#f5c469" stop-opacity="0.22" />
+          <stop offset="50%" stop-color="#fff5db" stop-opacity="0.48" />
+          <stop offset="70%" stop-color="#f5c469" stop-opacity="0.22" />
+          <stop offset="100%" stop-color="#f5c469" stop-opacity="0" />
+        </linearGradient>
+        <linearGradient id="yiBeamGrad" x1="0%" y1="50%" x2="100%" y2="50%">
+          <stop offset="0%" stop-color="#fff3d1" stop-opacity="0.9" />
+          <stop offset="100%" stop-color="#f5c469" stop-opacity="0.72" />
+        </linearGradient>
+        <linearGradient id="mainAxisGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#f5c469" stop-opacity="0.68" />
+          <stop offset="48%" stop-color="#8de6b0" stop-opacity="0.74" />
+          <stop offset="100%" stop-color="#f5c469" stop-opacity="0.96" />
+        </linearGradient>
+        <linearGradient id="metaRulerGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#fef0c7" />
+          <stop offset="52%" stop-color="#f5c469" />
+          <stop offset="100%" stop-color="#d8b4fe" />
+        </linearGradient>
+      </defs>
+
+      <g id="viewportGroup">
+        <g id="auraLayer"></g>
+        <g id="staticEdgesLayer"></g>
+        <g id="mainAxisLayer"></g>
+        <g id="metaRulerLayer" opacity="0" style="transition: opacity 0.36s ease;"></g>
+        <g id="dynamicLinksLayer"></g>
+        <g id="marginaliaLayer"></g>
+        <g id="nodesLayer"></g>
+      </g>
+    </svg>
+  </div>
+
+  <!-- 顶部双行毛玻璃悬浮栏 -->
+  <header class="top-header-shell" aria-label="星图题签与控制栏">
+    <!-- 第一行：星图题签 -->
+    <div class="header-row-title">
+      <div class="brand-left">
+        <!-- 极简纤细八芒星芒微标 SVG（细金线条，暗合星图与「米」字八方辐射） -->
+        <svg class="brand-star-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M14 2.2 L15.1 12.9 L25.8 14 L15.1 15.1 L14 25.8 L12.9 15.1 L2.2 14 L12.9 12.9 Z"
+                stroke="#f5c469" stroke-width="0.95" fill="rgba(245, 196, 105, 0.16)" stroke-linejoin="round" />
+          <line x1="6.4" y1="6.4" x2="11.2" y2="11.2" stroke="#f5c469" stroke-width="0.9" stroke-linecap="round" opacity="0.88" />
+          <line x1="21.6" y1="6.4" x2="16.8" y2="11.2" stroke="#f5c469" stroke-width="0.9" stroke-linecap="round" opacity="0.88" />
+          <line x1="6.4" y1="21.6" x2="11.2" y2="16.8" stroke="#f5c469" stroke-width="0.9" stroke-linecap="round" opacity="0.88" />
+          <line x1="21.6" y1="21.6" x2="16.8" y2="16.8" stroke="#f5c469" stroke-width="0.9" stroke-linecap="round" opacity="0.88" />
+          <circle cx="14" cy="14" r="1.45" fill="#fff3d1" />
+        </svg>
+        <h1 class="brand-title">一 · 十 · 木 · 米</h1>
+      </div>
+      <span class="brand-subtitle">汉字演化星图</span>
+    </div>
+
+    <!-- 第二行：无字小搜索框 + 三联毛玻璃胶囊（375px 窄屏零裁切） -->
+    <div class="header-row-controls">
+      <div class="search-wrap" id="searchWrap">
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7.5"></circle>
+            <path d="M20 20l-3.8-3.8" stroke-linecap="round"></path>
+          </svg>
+          <input id="searchInput" class="search-input" type="text" aria-label="检索星宿" autocomplete="off" />
+          <button id="searchClearBtn" class="search-clear" type="button" aria-label="清除搜索">✕</button>
+        </div>
+        <div id="searchDropdown" class="search-dropdown"></div>
+      </div>
+
+      <div class="control-capsules">
+        <button id="starNoteBtn" class="capsule-btn is-active" type="button" aria-pressed="true" title="切换星注与竖排柔色边款">
+          <span class="status-dot"></span>
+          <span>星注</span>
+        </button>
+        <button id="metaRulerBtn" class="capsule-btn" type="button" aria-pressed="false" title="点亮七星「一」元标尺">
+          <span style="color: var(--c-core); font-size: 11px;">✦</span>
+          <span>「一」元标尺</span>
+        </button>
+        <button id="tourBtn" class="capsule-btn" type="button" aria-pressed="false" title="开启九章漫游">
+          <span style="color: var(--c-core); font-size: 9.5px;">▶</span>
+          <span>九章漫游</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 「一」元标尺诗意浮条 -->
+  <div id="metaBanner" class="meta-banner" role="status">
+    <span class="meta-banner-star">✦</span>
+    <span class="meta-banner-text">
+      起于<span class="hl-gold">一</span>，历经分化、扎根、绽放，终在更高维度重逢<span class="hl-purple">一</span>
+    </span>
+    <button id="closeMetaBannerBtn" class="meta-banner-close" type="button">收起</button>
+  </div>
+
+  <!-- 右侧独立竖向缩放胶囊 -->
+  <div id="zoomCapsule" class="zoom-capsule" aria-label="画布缩放控制">
+    <button id="zoomInBtn" class="zoom-btn" type="button" title="放大">＋</button>
+    <div class="zoom-divider"></div>
+    <button id="zoomOutBtn" class="zoom-btn" type="button" title="缩小">－</button>
+    <div class="zoom-divider"></div>
+    <button id="zoomResetBtn" class="zoom-btn reset-btn" type="button" title="复位全览">复位</button>
+  </div>
+
+  <!-- 底部星域导航栏 -->
+  <nav class="filter-bar-wrap" aria-label="星域筛选">
+    <div id="filterBar" class="filter-bar"></div>
+  </nav>
+
+  <!-- 「壹至玖」九章漫游导览卡 -->
+  <aside id="tourCard" class="tour-card" aria-label="九章漫游">
+    <div class="tour-header">
+      <div class="tour-chapter-wrap">
+        <span id="tourNumeral" class="tour-numeral">壹</span>
+        <h2 id="tourTitle" class="tour-title">源流未分</h2>
+      </div>
+      <button id="tourCloseBtn" class="tour-close" type="button" aria-label="退出漫游">✕</button>
+    </div>
+    <p id="tourBody" class="tour-body"></p>
+    <div class="tour-footer">
+      <div id="tourDots" class="tour-dots"></div>
+      <div class="tour-controls">
+        <button id="tourPrevBtn" class="tour-nav-btn" type="button">上一章</button>
+        <button id="tourNextBtn" class="tour-nav-btn primary" type="button">下一章</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 星宿档案 · 悬浮星笺（顶缘居中星饰 · 方案三阅读态压暗 · 内底缘柔光渐隐） -->
+  <aside id="detailDrawer" class="detail-drawer" aria-label="星宿档案">
+    <div class="drawer-header">
+      <div class="drawer-ornament" aria-hidden="true">· ✦ ·</div>
+      <div class="drawer-top">
+        <span class="drawer-top-label">星 宿 档 案</span>
+        <button id="drawerCloseBtn" class="drawer-close-btn" type="button" aria-label="关闭档案">✕</button>
+      </div>
+    </div>
+    <div class="drawer-body-wrap">
+      <div id="drawerContent" class="drawer-scroll"></div>
+      <div class="drawer-bottom-fade" aria-hidden="true"></div>
+    </div>
+  </aside>
+
+  <!-- 桌面端悬停浮卡 -->
+  <div id="hoverTooltip" class="hover-tooltip" role="tooltip">
+    <div class="tt-head">
+      <span id="ttGlyph" class="tt-glyph"></span>
+      <span id="ttNote" class="tt-note"></span>
+      <span id="ttSeal" class="tt-seal">繁</span>
+    </div>
+    <div id="ttTag" class="tt-tag"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      'use strict';
+
+      const SVG_NS = 'http://www.w3.org/2000/svg';
+
+      function svgEl(tag, attrs = {}) {
+        const el = document.createElementNS(SVG_NS, tag);
+        for (const [k, v] of Object.entries(attrs)) {
+          if (v !== '' && v !== null && v !== undefined) {
+            el.setAttribute(k, String(v));
+          }
+        }
+        return el;
+      }
+
+      /* =======================================================================
+         一、星域定义与七大外绕星域「竖排柔色边款」坐标（2600 × 1450 画布）
+         ======================================================================= */
+      const DOMAINS = {
+        core: {
+          id: 'core',
+          name: '演化主脉',
+          color: '#f5c469',
+          tint: 'rgba(245, 196, 105, 0.14)',
+          marginalia: null
+        },
+        calib: {
+          id: 'calib',
+          name: '知行校准',
+          color: '#9fd8ea',
+          tint: 'rgba(159, 216, 234, 0.13)',
+          marginalia: { text: '知行校准', x: 205, y: 678, tint: '#bfe5f2' }
+        },
+        wood: {
+          id: 'wood',
+          name: '木系根基',
+          color: '#4ade80',
+          warnColor: '#e07a5f',
+          tint: 'rgba(74, 222, 128, 0.13)',
+          warnTint: 'rgba(224, 122, 95, 0.14)',
+          marginalia: { text: '木系根基', x: 642, y: 465, tint: '#a7e8be' }
+        },
+        craft: {
+          id: 'craft',
+          name: '形态打磨',
+          color: '#fbbf24',
+          tint: 'rgba(251, 191, 36, 0.13)',
+          marginalia: { text: '形态打磨', x: 1438, y: 1030, tint: '#f3d896' }
+        },
+        delivery: {
+          id: 'delivery',
+          name: '价值交付',
+          color: '#38bdf8',
+          tint: 'rgba(56, 189, 248, 0.13)',
+          marginalia: { text: '价值交付', x: 2502, y: 665, tint: '#a5dcf6' }
+        },
+        moat: {
+          id: 'moat',
+          name: '长期壁垒',
+          color: '#818cf8',
+          tint: 'rgba(129, 140, 248, 0.14)',
+          marginalia: { text: '长期壁垒', x: 2362, y: 232, tint: '#bdc4f7' }
+        },
+        shadow: {
+          id: 'shadow',
+          name: '系统暗面',
+          color: '#f43f5e',
+          tint: 'rgba(244, 63, 94, 0.13)',
+          marginalia: { text: '系统暗面', x: 2082, y: 1205, tint: '#eea4b1' }
+        },
+        leap: {
+          id: 'leap',
+          name: '高维化境',
+          color: '#c084fc',
+          tint: 'rgba(192, 132, 252, 0.14)',
+          marginalia: { text: '高维化境', x: 1358, y: 205, tint: '#d9baf7' }
+        }
+      };
+
+      const META_RULER_IDS = ['一', '士', '土', '干', '本', '末', '来'];
+      const META_RULER_SET = new Set(META_RULER_IDS);
+      const TRADITIONAL_SET = new Set(['樂', '鬱', '糰', '氣']);
+
+      /* =======================================================================
+         二、全部 42 颗星宿原版完整档案（100% 锁定原稿，零漂移、零删改）
+         ======================================================================= */
+      const NODES = [
+        /* ---------- 1. 演化主脉（4 颗） ---------- */
+        {
+          id: '一',
+          note: '原始线性',
+          pinyin: 'yī',
+          domain: 'core',
+          realm: '演化主脉 · 源流',
+          formula: '单横线性流（输入 → 直接滑出）',
+          tag: '未经加工的线性裸流，亦是贯穿星海的元标尺',
+          imagery: '一横平直向前，宛如不经停驻的水管，讯息进来便原样滑出，亦是本能主导的“刺激 → 反应”直通道。更深处看，这道横笔潜伏于星图各境，落于十、木与米顶定标要害。',
+          positioning: '主体意识觉醒前的浑沌源流，也是统摄全局的螺旋母线：起于一，历经分化、扎根、绽放，终在更高维度重逢一。',
+          practice: '面对刚刚涌来的讯息与情绪，我是顺着惯性脱口反应，还是先按下暂停键？',
+          related: ['十', '士', '土', '干', '本', '末', '来'],
+          x: 185, y: 1055, r: 32
+        },
+        {
+          id: '十',
+          note: '知行截流',
+          pinyin: 'shí',
+          domain: 'core',
+          realm: '演化主脉 · 中枢',
+          formula: '水平流（输入→输出）× 上竖（认知）× 下竖（能力）',
+          tag: '竖光劈开线性惯性，交汇之处发生真正的价值处理',
+          imagery: '一道清峻竖光直劈横流，在刺激与反应之间强行凿开思考的缝隙：上启清明的认知洞察，下沉扎实的执行能力，纵横交汇的中心，真正的「处理」由此发生。',
+          positioning: '告别被动搬运、觉醒为独立思考与创造中枢的奇点。周遭环绕知行校准五星，映照思辨、笃行、实干、杠杆与破土初萌之姿。',
+          practice: '今天流经我的大量资讯里，有多少真正停在自己的十字中枢里被拆解、消化并重组？',
+          related: ['一', '士', '土', '干', '千', '才'],
+          x: 485, y: 935, r: 38
+        },
+        {
+          id: '木',
+          note: '扎根成系',
+          pinyin: 'mù',
+          domain: 'core',
+          realm: '演化主脉 · 根系',
+          formula: '中枢「十」+ 左撇（上游资源）+ 右捺（下游资源）',
+          tag: '左右舒展承接上下游，由孤立中枢长成稳固系统',
+          imagery: '唯有十字尚难久立，底部撇捺向沃土左右舒展：左撇承接优质信息源、工具与同频圈层，右捺托举平台、渠道与杠杆，于是从单点中枢长成一棵自我站立的大树。',
+          positioning: '由个人单干迈向可持续运转的生命根基，统领整片木系左翼，掌管锚定本末、协作生乐、穿越暗礁与枝头结实。',
+          practice: '眼下停滞不前，是主干的认知与能力不足，还是左右两侧缺少能托举放大的资源根系？',
+          related: ['才', '本', '末', '休', '林', '樂', '果'],
+          x: 1015, y: 785, r: 43
+        },
+        {
+          id: '米',
+          note: '高密结晶',
+          pinyin: 'mǐ',
+          domain: 'core',
+          realm: '演化主脉 · 星核',
+          formula: '稳固「木」+ 上方悬空两笔（外部反馈 / 异质视野 / 时代雨露）',
+          tag: '脱壳压缩的高密度精华，向八方辐射滋养世界',
+          imagery: '底部撇捺紧连主干，上方两笔却悬空不与十字粘连——那不是凭线性苦干就能强占之物，而是持续照耀与修正系统的外部反馈、跨界视野与时代天时；谷物脱壳压缩成米，成为可被世人消化的高密度结晶。',
+          positioning: '整片星海的炽热星核：承接根系滋养与枝头原实，向外放射形态打磨、价值交付、长期壁垒、系统暗面与高维化境五大星海。',
+          practice: '在埋头精进之外，我是否为自己的系统留出了承接现实反馈与异质视角的悬空开口？',
+          related: ['果', '粗', '粥', '粮', '迷', '来', '番'],
+          x: 1725, y: 650, r: 55
+        },
+
+        /* ---------- 2. 知行校准（5 颗） ---------- */
+        {
+          id: '士',
+          note: '重道轻行',
+          pinyin: 'shì',
+          domain: 'calib',
+          realm: '知行校准 · 思辨',
+          formula: '「十」底加短横（上宽下窄）',
+          tag: '认知开阔而落地偏窄，重格局思辨须防空谈',
+          imagery: '元标尺「一」收束于中枢底端，呈上宽下窄之象——思想敏锐、擅长抽象推演与格局判断，却也易显头重脚轻，停留在纸上谈兵。',
+          positioning: '知行中枢的思辨明镜：致敬高远洞察，同时提醒擅长思考者主动拓宽脚下的实操地基。',
+          practice: '近期给出的精彩观点与判断里，有几条真正踩进泥土跑完了现实闭环？',
+          related: ['十', '土', '干', '一'],
+          x: 385, y: 725, r: 26
+        },
+        {
+          id: '土',
+          note: '厚土深耕',
+          pinyin: 'tǔ',
+          domain: 'calib',
+          realm: '知行校准 · 笃行',
+          formula: '「十」底加长横（上窄下宽）',
+          tag: '底盘厚重而实操扎实，能载万物亦须抬头看路',
+          imagery: '元标尺「一」在底端延展为厚重沃土——接地气、肯深耕、能扛事托底；但若上方视野收得过窄，便易陷于埋头拉车不抬头看路的惯性。',
+          positioning: '知行中枢的笃行明镜：肯定稳扎稳打的实干底色，同时提示笃行者定期抬头校准方向上限。',
+          practice: '这段时间一直在埋头苦干的事，是不是太久没有抬头审视它的长期方向？',
+          related: ['十', '士', '干', '一', '本'],
+          x: 495, y: 1170, r: 26
+        },
+        {
+          id: '干',
+          note: '实干封顶',
+          pinyin: 'gàn / gān',
+          domain: 'calib',
+          realm: '知行校准 · 实干',
+          formula: '「十」顶覆一横（骨干盾牌 / 认知封顶）',
+          tag: '心神压实的实干骨干，亦警示自满封顶',
+          imagery: '顶上那一横自带明暗两面：正向是摒弃杂念、压实去干的硬核骨干与专注盾牌；反面则是盖在认知顶端的封板，一旦固步自封，便不再向上生长。',
+          positioning: '与「士、土」共构以「一」校准中枢的完整气象，借简繁双镜映照实干压实与栋梁之材的深意。',
+          practice: '悬在认知上方的这道横，是帮我屏蔽噪音的专注盾牌，还是阻挡新知的傲慢封顶？',
+          related: ['十', '士', '土', '一', '才'],
+          x: 590, y: 710, r: 26
+        },
+        {
+          id: '千',
+          note: '杠杆倍增',
+          pinyin: 'qiān',
+          domain: 'calib',
+          realm: '知行校准 · 杠杆',
+          formula: '「十」顶轻斜一撇（错位视角与撬动支点）',
+          tag: '顶上巧借一撇杠杆，令同等知行倍增跃迁',
+          imagery: '仅在认知之巅轻轻倾斜一撇，便让「十」的能量跃升为「千」——这一撇既是破局的错位视角，也是千锤百炼后沉淀出的工具、模板与方法杠杆。',
+          positioning: '中枢效能的倍增星宿：说明真正拉开差距的往往不是蛮力加倍，而是顶部那一撇精妙切角。',
+          practice: '眼下反复耗费心力的重复工作里，能否在顶上加一撇工具或跨界视角实现倍增？',
+          related: ['十', '才', '士', '干'],
+          x: 295, y: 845, r: 26
+        },
+        {
+          id: '才',
+          note: '破土初萌',
+          pinyin: 'cái',
+          domain: 'calib',
+          realm: '知行校准 · 初萌',
+          formula: '中枢带钩 + 单左撇（破土新芽，根系未全）',
+          tag: '破土初萌之锐气，锋芒已露而根系尚待扎稳',
+          imagery: '古意如草木刚冲破土层的嫩芽。相比左右双翼扎稳的「木」，「才」已生出撬动局部输入的左撇锋芒，却尚未修成托举全局的右捺根系，是从中枢迈向根系的初萌之姿。',
+          positioning: '静悬于「十」向「木」奔涌的流光弧脉之上，映照天赋初露的灵光时刻，提醒有才者莫止步于单兵锐气，早日扎出稳固系统。',
+          practice: '我此刻依赖的是灵光乍现的个人才气，还是已经着手培植可长期复用的系统根基？',
+          related: ['十', '木', '千', '干', '果'],
+          x: 748, y: 845, r: 29
+        },
+
+        /* ---------- 3. 木系根基（12 颗） ---------- */
+        {
+          id: '本',
+          note: '根本锚点',
+          pinyin: 'běn',
+          domain: 'wood',
+          realm: '木系根基 · 定盘',
+          formula: '「木」底加指事一横（锁定深根）',
+          tag: '深埋地下的核心竞争力与第一性原理',
+          imagery: '元标尺「一」压在树身底端，直指整棵系统的命脉根基——决定大树能长多高、扛多大风浪的，从来不是枝梢热闹，而是幽深土壤里盘根错节的「本」。',
+          positioning: '木系左翼的定盘之星，亦是元标尺星轨的深根锚点，帮你在浮躁变局里守住最值得长久浇灌的基本盘。',
+          practice: '剥去外在头衔、平台红利与一时运气后，我身上最牢不可破的那条树根是什么？',
+          related: ['木', '末', '未', '一', '土'],
+          x: 875, y: 1005, r: 27
+        },
+        {
+          id: '末',
+          note: '枝梢表象',
+          pinyin: 'mò',
+          domain: 'wood',
+          realm: '木系根基 · 定盘',
+          formula: '「木」顶加指事一横（标定梢头）',
+          tag: '枝梢表层技巧与短期热点，警示本末倒置',
+          imagery: '元标尺「一」移至树冠最高梢头，指向随风摇曳的细枝末节——诸如花哨话术、一时风口与表层招式，吸睛却撑不起整棵系统。',
+          positioning: '与「本」上下呼应的标尺镜像：枝梢繁华须依托主干粗壮，莫把追逐表层技巧误当成系统成长。',
+          practice: '近期投入精力最多的新招式，究竟是在壮大深根之「本」，还是在装点枝梢之「末」？',
+          related: ['木', '本', '未', '一'],
+          x: 930, y: 535, r: 26
+        },
+        {
+          id: '未',
+          note: '静待花开',
+          pinyin: 'wèi',
+          domain: 'wood',
+          realm: '木系根基 · 候时',
+          formula: '「木」梢重枝初萌（枝叶尚未完全舒展）',
+          tag: '枝叶未展而蓄势待发，敬畏时间复利与耐心',
+          imagery: '嫩枝刚刚探出梢头、尚未全然张开，蕴藏着正在酝酿的未来。几乎所有真正长青的复利体系，早期都在默默经历不起眼的「未」之蓄力期。',
+          positioning: '根系生长的时间校准星：对抗急躁与拔苗助长，让你在显性回报尚未到来时依然从容深耕、静待花开。',
+          practice: '眼前迟迟未见爆发的事，是方向本身有误，还是它正处在必须静候花期的「未」时？',
+          related: ['木', '本', '末', '果'],
+          x: 1105, y: 515, r: 26
+        },
+        {
+          id: '休',
+          note: '倚木而息',
+          pinyin: 'xiū',
+          domain: 'wood',
+          realm: '木系根基 · 杠杆',
+          formula: '亻（人）倚靠「木」旁歇息',
+          tag: '人倚大树得片刻喘息，系统托举你而非榨干你',
+          imagery: '纯靠意志力死撑是透支生命的苦干；当你把流程、工具与资源修成稳固大树，人便能靠在树荫下歇一口气——真正成熟的系统替你扛压，而非吞噬你。',
+          positioning: '检验系统健康度的试金石：高明的努力自带呼吸感与恢复节律，在留白休整里生出更清明的判断。',
+          practice: '我当下的节奏必须寸步不离死盯才不崩盘，还是已经修出了能安心倚「休」的树荫？',
+          related: ['木', '樂', '林', '呆'],
+          x: 790, y: 670, r: 26
+        },
+        {
+          id: '林',
+          note: '同频协作',
+          pinyin: 'lín',
+          domain: 'wood',
+          realm: '木系根基 · 协作',
+          formula: '木 + 木（双木并肩成林）',
+          tag: '双木并肩互为倚仗，小团队与同频共振',
+          imagery: '独木易折，两棵各自扎稳的树并肩而立，地下根脉交织互养，空中树冠彼此挡风，轻而易举突破单兵精力的天然上限。',
+          positioning: '从个人深耕步入同频协作的跃迁星宿：寻得能力互补、志趣相投的伙伴，让彼此优势激荡出成倍回响。',
+          practice: '在这段长期耕耘里，我是在孤身硬扛，还是主动结识了可以背靠背成「林」的同行者？',
+          related: ['木', '森', '休', '本'],
+          x: 1140, y: 1005, r: 27
+        },
+        {
+          id: '森',
+          note: '生态网络',
+          pinyin: 'sēn',
+          domain: 'wood',
+          realm: '木系根基 · 生态',
+          formula: '木 + 木 + 木（众木蔚然成森）',
+          tag: '众木相生自成微气候，复杂生态与网络效应',
+          imagery: '林木丰茂成森，自己涵养水源沃土、自己调和风霜气候——由双木协作进一步舒展为能够自我更新、抵御外界震荡的有机生态网络。',
+          positioning: '木系左翼的生态高点：当作品、方法、人脉与协作彼此喂养，系统便获得了超越个体时间线的蓬勃生机。',
+          practice: '我手头深耕的事物，有没有可能从一次次单点交付，生长成自我循环的小型生态？',
+          related: ['林', '木', '鬱', '番'],
+          x: 1300, y: 1115, r: 28
+        },
+        {
+          id: '果',
+          note: '枝头原实',
+          pinyin: 'guǒ',
+          domain: 'wood',
+          realm: '木系根基 · 原实',
+          formula: '饱满「原实」垂挂于「木」梢之上',
+          tag: '根系初熟结出的带壳战果，脱壳提纯方成米之结晶',
+          imagery: '大树扎根抽枝后，先在枝头结出带着皮壳的原始战果——跑通一个完整项目、交付一件真实作品；唯有历经原实的熟化、脱壳与压缩，才能化作喂养世人的高密度之「米」。',
+          positioning: '静悬于「木」奔向「米」的流光弧脉之上，见证根系生长结出真实战果的关键熟化时刻。',
+          practice: '我这一阶段悉心培植的根系，究竟在枝头结出了哪一颗拿得出手的真实原实？',
+          related: ['木', '米', '才', '未', '粗', '番'],
+          x: 1368, y: 706, r: 30
+        },
+        {
+          id: '困',
+          note: '边界受限',
+          pinyin: 'kùn',
+          domain: 'wood',
+          isBottleneck: true,
+          realm: '木系根基 · 暗礁',
+          formula: '囗（四面高墙）紧箍「木」身',
+          tag: '大树被高墙围死，环境或思维边界锁死生长',
+          imagery: '树身本身未必有病，只因四周高墙紧箍，枝叶伸展不开、根系盘结窒息；在过小的花盆里加倍浇水，往往只会加剧窒息感。',
+          positioning: '根系左翼最犀利的环境诊断镜：帮你分辨“自身根基不足”与“所处容器太小”，有时破局只需果断移栽换土。',
+          practice: '让我感到压抑难展的，究竟是自身努力不够，还是四周这堵看不见的「囗」墙？',
+          related: ['木', '本', '枯', '鬱', '断'],
+          x: 965, y: 1225, r: 26
+        },
+        {
+          id: '呆',
+          note: '僵化停滞',
+          pinyin: 'dāi',
+          domain: 'wood',
+          isBottleneck: true,
+          realm: '木系根基 · 暗礁',
+          formula: '口（空谈）顶于「木」（僵立）之上',
+          tag: '木顶一口，只顾空谈或陷入机械僵化而停止生长',
+          imagery: '树干顶着一张滔滔不绝的嘴，脚下却纹丝不动——既警惕以高谈阔论替代亲身实践，也警示落入机械重复而失去鲜活感知。',
+          positioning: '根系停滞警报：莫把“聊透了道理”误当成“已走通现实”，唯有亲手试错破土才能留住生命活性。',
+          practice: '我最近津津乐道的某个好点子，是不是依然停在「口」上而迟迟没有迈出落地一步？',
+          related: ['木', '休', '末', '粗'],
+          x: 750, y: 505, r: 26
+        },
+        {
+          id: '枯',
+          note: '失活干涸',
+          pinyin: 'kū',
+          domain: 'wood',
+          isBottleneck: true,
+          realm: '木系根基 · 暗礁',
+          formula: '「木」+ 古（陈旧干涸）',
+          tag: '断绝新鲜活水输入，吃老本而渐渐失活干涸',
+          imagery: '若大树只守着昔日粗枝，不再向新土壤与空气汲取活水，再深厚的经验也会在封闭惯性里失水干枯。',
+          positioning: '资深耕耘者的隐秘警钟：越有经验越容易封闭，唯有不断注入跨界刺激与一手体验，系统方能常青。',
+          practice: '我的日常输入里，有多久没有注入令自己感到陌生、微痛又兴奋的新鲜活水了？',
+          related: ['木', '困', '鬱', '糟', '粕'],
+          x: 1165, y: 1265, r: 26
+        },
+        {
+          id: '樂',
+          note: '系统生乐',
+          pinyin: 'lè / yuè',
+          domain: 'wood',
+          isTraditional: true,
+          realm: '木系根基 · 繁体遗珠',
+          formula: '丝弦张于「木」座之上（轻拨生韵）',
+          tag: '丝弦架于木上拨出清音，系统成熟后生出韵律与心流',
+          imagery: '简体「乐」略去了底座之木，唯有繁体「樂」画出丝弦架在稳固木座之上，轻拨即响——比「休」更进一步，标志系统不再只是庇护所，更开始持续奏出愉悦与心流。',
+          positioning: '根系左翼的高阶心境遗珠：长久的卓越绝非靠咬牙苦撑维系，扎稳「木」之底座，热爱自能化作源源不断的清越之「樂」。',
+          practice: '我悉心搭建的这套方法与生活结构，是在不断耗干我的兴致，还是正让我沉浸其中生「樂」？',
+          related: ['木', '休', '本', '鬱'],
+          x: 765, y: 1160, r: 27
+        },
+        {
+          id: '鬱',
+          note: '丰盛内耗',
+          pinyin: 'yù',
+          domain: 'wood',
+          isBottleneck: true,
+          isTraditional: true,
+          realm: '木系根基 · 繁体遗珠',
+          formula: '双「木」蔚然林立，却深闭幽室之中',
+          tag: '林木丰茂却缺少出口，丰盛积累反化作郁结内耗',
+          imagery: '简体「郁」隐去繁茂双木，繁体「鬱」则淋漓绘出：整片茂盛树林被堵在密闭空间里透不过气——高能者的苦闷往往不是贫乏，而是积蓄太多却迟迟没打开表达与输出出口。',
+          positioning: '与「困」互为深浅映照的繁体遗珠：「困」是独木受限，「鬱」是成林无口，破郁之道正是借「果」与「粗」痛快开启释放管道。',
+          practice: '此刻胸中的沉重内耗，是因为积累太少，还是林木太盛却迟迟没给自己开一扇出口？',
+          related: ['木', '森', '困', '樂', '果', '粗'],
+          x: 1325, y: 920, r: 27
+        },
+
+        /* ---------- 4. 形态打磨（5 颗） ---------- */
+        {
+          id: '粗',
+          note: '最小原型',
+          pinyin: 'cū',
+          domain: 'craft',
+          realm: '形态打磨 · 起手',
+          formula: '「米」+ 且（暂且、姑且）',
+          tag: '敢先拿出最小可行原型，破除完美主义内耗',
+          imagery: '“且”字替创造者松开紧箍咒：敢把“暂且如此”的粗粮先端上桌跑通反馈闭环，破除迟迟不敢动笔的停滞，有了粗胚才谈得上后续精雕。',
+          positioning: '步入精华星海的起手心法，也是化解「呆」与「鬱」最利落的破冰一击。',
+          practice: '有没有一件酝酿很久的作品，只因执着于一步到位而迟迟没有拿出第一版粗胚？',
+          related: ['米', '果', '粒', '精', '鬱'],
+          x: 1505, y: 905, r: 26
+        },
+        {
+          id: '粒',
+          note: '原子模块',
+          pinyin: 'lì',
+          domain: 'craft',
+          realm: '形态打磨 · 独立',
+          formula: '「米」+ 立（独立站立）',
+          tag: '颗粒清晰、原子化独立成篇的价值模块',
+          imagery: '让每一颗结晶都能自己稳稳「立」住——一张自足的思考卡片、一个可单独调用的方法模块，颗粒越清晰，日后跨界重组的自由度越高。',
+          positioning: '知识资产的最小复用积木：将庞杂经验拆解为粒粒分明的独立模块，极大提升创作与迁移效率。',
+          practice: '近期沉淀的实战心得，能否拆成几颗随时可以跨场景调用的独立「粒」子？',
+          related: ['粗', '料', '粉', '继'],
+          x: 1625, y: 1050, r: 26
+        },
+        {
+          id: '料',
+          note: '度量预判',
+          pinyin: 'liào',
+          domain: 'craft',
+          realm: '形态打磨 · 度量',
+          formula: '「米」+ 斗（量器度量）',
+          tag: '执斗度量底牌存量，借扎实家底推演预判',
+          imagery: '拿斗量米，清清楚楚盘点肚里究竟有多少真材实「料」，方能游刃有余地调配材料，并凭扎实存量推演预「料」局势走向。',
+          positioning: '系统的家底盘点仪：定期清点自己的案例、模型与作品库存，把模糊忙碌转化为笃定底牌。',
+          practice: '当重要机遇突然叩门时，我清楚自己手里到底有多少能立刻出牌的存「料」吗？',
+          related: ['粒', '精', '粮', '米'],
+          x: 1785, y: 1085, r: 26
+        },
+        {
+          id: '精',
+          note: '注以生机',
+          pinyin: 'jīng',
+          domain: 'craft',
+          realm: '形态打磨 · 生机',
+          formula: '「米」+ 青（鲜活生机与本色质感）',
+          tag: '为硬核结晶注入生机、审美与灵气',
+          imagery: '在洁白结晶里注入青翠欲滴的生命力——当严密逻辑遇上灵动审美与真挚温度，作品便告别枯燥说教，焕发出过目难忘的精气神。',
+          positioning: '形态打磨的质感标杆：让硬核干货拥有鲜活灵魂与审美辨识度，铸就真正的代表作。',
+          practice: '我打磨出的作品，只是正确而平板，还是散发着鲜活灵动的「精」气神？',
+          related: ['料', '粹', '粗', '氣', '奥'],
+          x: 1935, y: 1025, r: 27
+        },
+        {
+          id: '粹',
+          note: '极致提纯',
+          pinyin: 'cuì',
+          domain: 'craft',
+          realm: '形态打磨 · 纯粹',
+          formula: '「米」+ 卒（终极提纯）',
+          tag: '做减法至纯度极限，剥离一切冗余杂质',
+          imagery: '减法的深厚修为：把冗余修辞、多余铺垫与低效装饰统统剥离，将漫长历练压成直击本质的高纯度干货。',
+          positioning: '与「精」双璧辉映：精重生机神采，粹重纯度密度，愈纯粹，愈具穿透人心的力量。',
+          practice: '若必须把这份表达狠心删去一半篇幅，最不可舍弃、直指核心的那一半是什么？',
+          related: ['精', '米', '糟', '粥'],
+          x: 2065, y: 925, r: 27
+        },
+
+        /* ---------- 5. 价值交付（5 颗） ---------- */
+        {
+          id: '粥',
+          note: '慢熬降维',
+          pinyin: 'zhōu',
+          domain: 'delivery',
+          realm: '价值交付 · 熬煮',
+          formula: '弓 + 「米」+ 弓（蒸汽缭绕、文火慢熬）',
+          tag: '文火慢熬降维表达，让硬核生米温润好吸收',
+          imagery: '生米虽饱含养分，却坚硬难嚼；借同理心与耐心文火慢熬成一碗热「粥」，高密度洞见才能化作人人听得懂、咽得下的公共表达。',
+          positioning: '专家破圈的核心交付功夫：真正高明的输出者从不炫耀生涩术语，而是擅长把生米熬成暖胃热粥。',
+          practice: '今天的沟通与写作，是在向对方硬塞难嚼的生米，还是熬成了一碗温润热「粥」？',
+          related: ['米', '粉', '糖', '粘', '粹'],
+          x: 2115, y: 745, r: 28
+        },
+        {
+          id: '粉',
+          note: '拆解渗透',
+          pinyin: 'fěn',
+          domain: 'delivery',
+          realm: '价值交付 · 渗透',
+          formula: '「米」+ 分（细磨细分）',
+          tag: '化整为零扩大接触面，实现轻盈深度渗透',
+          imagery: '将整颗米细细磨散，看似碎了，实则表面积暴增、穿透力极强；渗入日常碎片场景，亦巧妙接住现代语境中的「粉丝」共鸣。',
+          positioning: '注意力稀缺时代的传播巧思：把厚重体系拆解为轻巧金句、卡片与图解，让价值轻盈渗入人群。',
+          practice: '我的深度思考，能否拆成别人三秒便能领会、愿意珍藏分享的细「粉」切片？',
+          related: ['粥', '糖', '粒', '糰'],
+          x: 2270, y: 880, r: 26
+        },
+        {
+          id: '糖',
+          note: '情绪甜头',
+          pinyin: 'táng',
+          domain: 'delivery',
+          realm: '价值交付 · 回甘',
+          formula: '「米」+ 唐（谷物转化生出甘甜）',
+          tag: '添入故事幽默与情绪甜头，让干货甘之如饴',
+          imagery: '纯理性干货管饱却寡淡，谷物转化出甜味才令人回味——添一抹好故事、幽默感与真诚共鸣，对方自会心甘情愿咽下硬核洞见。',
+          positioning: '叩开心智门扉的温情入口：情绪共鸣与叙事张力，常常是理性价值抵达他人的第一张请柬。',
+          practice: '在端出严肃道理之前，我有没有先给听众一点愿意继续听下去的故事共鸣？',
+          related: ['粥', '粉', '粘'],
+          x: 2370, y: 720, r: 26
+        },
+        {
+          id: '粘',
+          note: '心智留存',
+          pinyin: 'nián',
+          domain: 'delivery',
+          realm: '价值交付 · 留存',
+          formula: '「米」+ 占（占据心智一席）',
+          tag: '占住心智生出粘性，对内知识成网、对外留住人心',
+          imagery: '对内让新旧认知彼此粘连成网，告别学完即忘；对外在他人心智中稳稳占下一席之地，把擦肩而过的相遇沉淀为持久信赖。',
+          positioning: '价值交付的留存标尺：唯有留下独特记忆锚点与长久信任，一次偶遇才会长成长期同行。',
+          practice: '别人读完我的输出后，是划过即忘，还是在心底留下了一个难以替代的记忆锚点？',
+          related: ['米', '粥', '糖', '糰', '继'],
+          x: 2215, y: 575, r: 27
+        },
+        {
+          id: '糰',
+          note: '聚散成群',
+          pinyin: 'tuán',
+          domain: 'delivery',
+          isTraditional: true,
+          realm: '价值交付 · 繁体遗珠',
+          formula: '「米」+ 團（颗颗优米捏合抱团）',
+          tag: '将散落优米聚合成团，化作高凝聚力社群与共同体',
+          imagery: '简体「团」删去内核米粒只余外框，繁体「糰」则一语道破凝聚真谛：唯有先将颗颗「米」修得饱满温润，再借信任粘性捏合成糰，社群与组织方能牢不可破。',
+          positioning: '价值交付的凝聚高境：由渗透（粉）、甜头（糖）、留存（粘），终至同频共行的铁粉共同体。',
+          practice: '我聚拢起的关系与社群，是靠外壳勉强拼凑的空「团」，还是高密度价值凝成的「糰」？',
+          related: ['粘', '粉', '粥', '粮', '类'],
+          x: 2410, y: 545, r: 28
+        },
+
+        /* ---------- 6. 长期壁垒（4 颗） ---------- */
+        {
+          id: '粮',
+          note: '过冬资产',
+          pinyin: 'liáng',
+          domain: 'moat',
+          realm: '长期壁垒 · 储备',
+          formula: '「米」+ 良（精选优米留作储备）',
+          tag: '储备精良核心资产，拥有穿越周期的过冬底气',
+          imagery: '脱离手停口停的零散消耗，把最精良的成果沉淀为可复用资产、稳定现金流与深厚口碑——手中有「粮」，纵遇周期风浪亦能心中不慌。',
+          positioning: '长期壁垒的压舱之星，借简繁双镜「粮 / 糧」同时映照「良」之品质与「量」之储备体量。',
+          practice: '日复一日的奔忙里，有多少沉淀成了明年依然能替我遮风挡雨的过冬余「粮」？',
+          related: ['米', '奥', '继', '断', '糰', '番'],
+          x: 2060, y: 440, r: 28
+        },
+        {
+          id: '奥',
+          note: '深水壁垒',
+          pinyin: 'ào',
+          domain: 'moat',
+          realm: '长期壁垒 · 深水',
+          formula: '幽深屋室藏「米」+ 下托「大」',
+          tag: '藏米于幽室潜心琢磨，构筑难以看透的深水壁垒',
+          imagery: '将精华收入幽静深室里沉心钻研，外人一眼望不穿你的心法门道，久而久之便修出难以模仿的「奥」秘与深水护城河。',
+          positioning: '长期壁垒最深邃的防线：表层招式人人可抄，唯有在无人喝彩的深水区熬出的直觉判断，方是真正壁垒。',
+          practice: '在我深耕的领域里，哪一片值得沉心钻研数年的深水「奥」区，正等待我潜心打磨？',
+          related: ['粮', '断', '继', '精'],
+          x: 2255, y: 395, r: 27
+        },
+        {
+          id: '断',
+          note: '斩断沉没',
+          pinyin: 'duàn',
+          domain: 'moat',
+          realm: '长期壁垒 · 决断',
+          formula: '「米」+ 斤（挥斧利落劈开）',
+          tag: '挥斧劈开低效缠绕，敢于斩断沉没成本',
+          imagery: '真正的长期成长绝不只靠堆叠加法，更需要举斧劈开缠绕的魄力——果断斩去低效项目、消耗型关系与旧日执念，主线方能轻装远行。',
+          positioning: '与「继」相辅相成的战略减法，借简繁双镜「断 / 斷」从斩去冗余产出直指斩断深处路径依赖。',
+          practice: '当下哪件持续消耗心力却收效微薄的事，最需要我挥斧利落一「断」？',
+          related: ['继', '粮', '奥', '迷', '困'],
+          x: 2175, y: 240, r: 27
+        },
+        {
+          id: '继',
+          note: '串联复利',
+          pinyin: 'jì',
+          domain: 'moat',
+          realm: '长期壁垒 · 复利',
+          formula: '纟（丝线）+ 「米」',
+          tag: '以一根丝线串联散落之米，开启长期主义复利',
+          imagery: '用一条清晰主线将散落各处的结晶穿成珠串，让今天的创造稳稳立在昨日的肩膀之上，长期复利的飞轮由此真正咬合转动。',
+          positioning: '长期壁垒的复利中轴，借简繁双镜「继 / 繼」点破：外在产出可随势更新，内在脉络须一以贯之。',
+          practice: '回望过去一年，我的诸多产出是散落一地的孤立米粒，还是连成了一条越走越宽的主线？',
+          related: ['米', '粮', '断', '奥', '粒', '粘'],
+          x: 2000, y: 285, r: 27
+        },
+
+        /* ---------- 7. 系统暗面（3 颗） ---------- */
+        {
+          id: '迷',
+          note: '失焦执念',
+          pinyin: 'mí',
+          domain: 'shadow',
+          realm: '系统暗面 · 双刃',
+          formula: '「米」+ 辶（盲目奔走）',
+          tag: '手握诸米盲目狂奔，丢锚成迷茫、有锚即着迷',
+          imagery: '手里攒满四面八方的米，脚下却只顾埋头奔走——信息过载、赛道贪多，越用力越迷茫；可一旦抬头瞄准「来」之顶层愿景，迷茫便瞬间化为忘我心流之「着迷」。',
+          positioning: '高产勤奋者最易跌入的隐忧：奔跑速度永远补不了方向失焦，愈是焦虑狂奔，愈需停脚定锚。',
+          practice: '近期高强度的忙碌，是心有定锚的沉浸「着迷」，还是害怕落后的盲目「迷」茫？',
+          related: ['米', '糟', '粕', '断', '来'],
+          x: 1560, y: 1245, r: 27
+        },
+        {
+          id: '糟',
+          note: '陈旧包袱',
+          pinyin: 'zāo',
+          domain: 'shadow',
+          realm: '系统暗面 · 排浊',
+          formula: '「米」+ 曹（酿榨留下的旧渣）',
+          tag: '高强度加工伴生的过时经验与陈旧包袱',
+          imagery: '任何精密系统在酿出精粹的同时必然伴生米糟——昔日成功留下的路径依赖、感动自己的无效忙碌，若不定期清理，便会发酸堵塞新的生机。',
+          positioning: '系统的代谢排浊提醒：真正绊住高手脚步的往往不是失败，而是把昨日成功留下的旧米糟当成今日法宝。',
+          practice: '我是否正紧紧抱着某次旧成功的「糟」粕不放，反而遮蔽了当下新的可能？',
+          related: ['迷', '粕', '粹', '枯'],
+          x: 1765, y: 1300, r: 26
+        },
+        {
+          id: '粕',
+          note: '代谢废渣',
+          pinyin: 'pò',
+          domain: 'shadow',
+          realm: '系统暗面 · 清零',
+          formula: '「米」+ 白（榨干养分的苍白空壳）',
+          tag: '精华抽尽后的代谢废渣，警惕把昨日米渣当今日干粮',
+          imagery: '养分抽干后徒留苍白无味的空壳——当鲜活创造退化为机械套模板、用形式主义打卡求心安，系统便在空转中失去魂魄。',
+          positioning: '对伪勤奋的清零之镜：守护对真实问题与一手体验的敏锐，果断清理一切只剩空壳的惯性动作。',
+          practice: '我日常坚持的惯例里，有哪些早已被榨干养分，只剩下苍白的形式空壳？',
+          related: ['迷', '糟', '枯', '精'],
+          x: 1965, y: 1245, r: 26
+        },
+
+        /* ---------- 8. 高维化境（4 颗，纯净紫金冠冕，番无田字图） ---------- */
+        {
+          id: '来',
+          note: '万象自来',
+          pinyin: 'lái',
+          domain: 'leap',
+          realm: '高维化境 · 归一',
+          formula: '「米」顶复现一横（顶层愿景 / 大道锚点）',
+          tag: '顶层愿景收束全局，引力反转令机会与未来奔涌而来',
+          imagery: '元标尺「一」在星海之巅重逢，化作统摄全局的顶层愿景与价值锚点，把原本散落的外部反馈与时代天时收束归心；当系统密度足够高时势能反转，良机与同频者自四方奔涌而来。',
+          positioning: '演化主脉的至高冠冕，亦是元标尺螺旋的终极回归；借简繁双镜「来 / 來」，更可见简体收束「米」、繁体双人栖「木」的绝妙互文。',
+          practice: '悬在我全部努力、作品与取舍之上的那一道顶层愿景之横，究竟是什么？',
+          related: ['米', '一', '番', '氣', '类', '迷'],
+          x: 1715, y: 255, r: 36
+        },
+        {
+          id: '番',
+          note: '播入现实',
+          pinyin: 'fān',
+          domain: 'leap',
+          realm: '高维化境 · 入世',
+          formula: '釆（挥手播撒米粒）+ 田（现实沃野）',
+          tag: '将高密结晶播撒进真实田野，触发一番又一番入世复利',
+          imagery: '结晶锁在仓库里终究只是静态存量；挥手将饱满米粒播进真实世界的沃野（市场、行业、社会网格），才会引发轮转迭代与生生不息的翻番生长。',
+          positioning: '从卓越创作者迈向生态耕耘者的化境之门：为你的结晶寻到最相契的现实土壤，让价值真正生根结果。',
+          practice: '我悉心打磨出的精华结晶，已经找到最契合的那片现实沃野去播撒了吗？',
+          related: ['米', '来', '类', '果', '粮', '森'],
+          x: 1505, y: 330, r: 30
+        },
+        {
+          id: '氣',
+          note: '化形为场',
+          pinyin: 'qì',
+          domain: 'leap',
+          isTraditional: true,
+          realm: '高维化境 · 繁体遗珠',
+          formula: '气 + 「米」（蒸米化气、升腾弥漫）',
+          tag: '有形之米蒸腾为无形气场，由做事升维至造场感召',
+          imagery: '十、木、米皆为有形固态，唯有繁体「氣」绘出蒸煮米核后升腾弥漫空间的无形蒸气——当你的标准、作品与品格化作春风化雨的风气，便完成了从做事到造场的终极相变。',
+          positioning: '影响力维度的至高化境：即便本人不在场，由你凝练出的文化气象与精神底气依然在持续润泽周遭世界。',
+          practice: '当我本人不在现场时，我的作品、原则或精神气象能否依然持续散发正向感召？',
+          related: ['米', '来', '类', '精', '继'],
+          x: 1885, y: 155, r: 30
+        },
+        {
+          id: '类',
+          note: '自成一派',
+          pinyin: 'lèi',
+          domain: 'leap',
+          realm: '高维化境 · 成派',
+          formula: '「米」+ 大（托举放大、自成格局）',
+          tag: '定义新品类与新范式，自成一派并吸引同频同类',
+          imagery: '将独一无二的「米」托举放大，彻底跳出同质化赛道的拥挤内卷——不再只做既有标准里更勤奋的一员，而是亲手定义一个新品类，物以类聚凝聚同类族群。',
+          positioning: '格局与品牌的至高生态位：当你活成一个辨识度极高的独立范式，喧嚣竞争自然消解，属于你的同类自会靠拢。',
+          practice: '我的方法与作品，是否已经长出了令人一眼辨识、难以被归入旧框的独特品类感？',
+          related: ['米', '来', '番', '氣', '糰'],
+          x: 1360, y: 465, r: 29
+        }
+      ];
+
+      const NODE_MAP = {};
+      NODES.forEach(n => { NODE_MAP[n.id] = n; });
+
+      /* =======================================================================
+         三、11 字米字格交互笔画解构数据（100% 锁定原稿）
+         ======================================================================= */
+      const DECOMPOSITIONS = {
+        '一': {
+          strokes: [
+            { id: 's1', d: 'M 18 60 L 102 60', color: '#f5c469', width: 5.4, label: '元标尺 · 原始线性流', desc: '左入右出的本能直通道，亦是潜伏全图的校准标尺' }
+          ]
+        },
+        '十': {
+          strokes: [
+            { id: 's1', d: 'M 20 56 L 100 56', color: '#9fd8ea', width: 4.5, label: '横流 · 输入与输出', desc: '顺时间自左向右流经个体的信息流' },
+            { id: 's2', d: 'M 60 18 L 60 56', color: '#38bdf8', width: 4.8, label: '上竖 · 认知洞察', desc: '向上抽象、理解规律与建立框架' },
+            { id: 's3', d: 'M 60 56 L 60 102', color: '#4ade80', width: 4.8, label: '下竖 · 执行能力', desc: '向下落地、动手拆解与兑现结果' },
+            { id: 's4', circle: { cx: 60, cy: 56, r: 6.5 }, color: '#f5c469', label: '交点 · 价值处理核', desc: '知行交汇的黄金瞬间，真正增值由此发生' }
+          ]
+        },
+        '士': {
+          strokes: [
+            { id: 's1', d: 'M 20 50 L 100 50', color: '#38bdf8', width: 4.5, label: '上长横 · 开阔视野', desc: '抽象思辨与战略格局宽广舒展' },
+            { id: 's2', d: 'M 60 22 L 60 92', color: '#9fd8ea', width: 4.4, label: '中竖 · 知行脊梁', desc: '串联思想洞察与落地动作的中轴' },
+            { id: 's3', d: 'M 34 92 L 86 92', color: '#f5c469', width: 5.4, label: '元标尺「一」· 偏窄底盘', desc: '底端短横警示接地偏窄，须防眼高手低' }
+          ]
+        },
+        '土': {
+          strokes: [
+            { id: 's1', d: 'M 34 50 L 86 50', color: '#9fd8ea', width: 4.4, label: '上短横 · 收敛视野', desc: '专注脚下具体事务，亦须留意抬头看路' },
+            { id: 's2', d: 'M 60 22 L 60 94', color: '#4ade80', width: 4.4, label: '中竖 · 笃行主轴', desc: '扎根现实的实干主干' },
+            { id: 's3', d: 'M 18 94 L 102 94', color: '#f5c469', width: 5.4, label: '元标尺「一」· 厚重沃土', desc: '底端长横延展为稳固底盘，厚德载物' }
+          ]
+        },
+        '干': {
+          strokes: [
+            { id: 's1', d: 'M 26 28 L 94 28', color: '#f5c469', width: 5.4, label: '元标尺「一」· 专注盾牌 / 封顶', desc: '压实去干的抗干扰屏障，亦警惕自满封顶' },
+            { id: 's2', d: 'M 18 58 L 102 58', color: '#9fd8ea', width: 4.4, label: '中横 · 真实流转', desc: '投入现实场景的输入与产出线' },
+            { id: 's3', d: 'M 60 28 L 60 102', color: '#4ade80', width: 4.6, label: '中竖 · 硬核骨干', desc: '撑起实干行动的垂直主梁' }
+          ]
+        },
+        '才': {
+          strokes: [
+            { id: 's1', d: 'M 22 44 L 98 44', color: '#9fd8ea', width: 4.4, label: '横笔 · 破土边界', desc: '冲破平庸惯性的地平线' },
+            { id: 's2', d: 'M 68 18 L 68 96 Q 68 104 54 96', color: '#f5c469', width: 4.6, label: '竖钩 · 锐气主干', desc: '破土而出的才华锋芒与内收蓄力' },
+            { id: 's3', d: 'M 66 48 Q 48 72 22 92', color: '#4ade80', width: 4.6, label: '单左撇 · 初萌支点', desc: '已能撬动局部输入，尚待长出右翼根系' }
+          ]
+        },
+        '木': {
+          strokes: [
+            { id: 's1', d: 'M 22 46 L 98 46', color: '#9fd8ea', width: 4.2, label: '横笔 · 信息流转', desc: '承接系统内的输入与输出' },
+            { id: 's2', d: 'M 60 18 L 60 104', color: '#f5c469', width: 4.6, label: '竖干 · 知行主干', desc: '贯通认知与能力的笔直树干' },
+            { id: 's3', d: 'M 58 48 Q 42 74 20 96', color: '#4ade80', width: 4.6, label: '左撇 · 上游资源', desc: '工具、优质信息源与高能圈层滋养' },
+            { id: 's4', d: 'M 62 48 Q 78 74 100 96', color: '#38bdf8', width: 4.6, label: '右捺 · 下游杠杆', desc: '平台、渠道与资本放大托举' }
+          ]
+        },
+        '本': {
+          strokes: [
+            { id: 's1', d: 'M 22 44 L 98 44 M 60 18 L 60 104', color: '#9fd8ea', width: 4.1, label: '木干 · 稳固主架', desc: '系统的核心树干结构' },
+            { id: 's2', d: 'M 58 46 Q 42 70 20 90 M 62 46 Q 78 70 100 90', color: '#4ade80', width: 4.1, label: '双根 · 资源延伸', desc: '向四周展开的支撑网络' },
+            { id: 's3', d: 'M 36 86 L 84 86', color: '#f5c469', width: 5.5, label: '元标尺「一」· 锁定树根', desc: '指事一横压于底端，直指根本锚点与命脉基本盘' }
+          ]
+        },
+        '末': {
+          strokes: [
+            { id: 's1', d: 'M 18 32 L 102 32', color: '#f5c469', width: 5.5, label: '元标尺「一」· 标定树梢', desc: '长横悬于最顶端，指向热点、表层招式与枝梢表象' },
+            { id: 's2', d: 'M 30 56 L 90 56 M 60 16 L 60 104', color: '#9fd8ea', width: 4.0, label: '中干 · 下方主架', desc: '托起枝梢的真实主干' },
+            { id: 's3', d: 'M 58 58 Q 42 80 22 98 M 62 58 Q 78 80 100 98', color: '#4ade80', width: 4.0, label: '双根 · 底层支撑', desc: '唯有根壮，枝梢之末方不飘摇' }
+          ]
+        },
+        '米': {
+          strokes: [
+            { id: 's1', d: 'M 28 24 Q 35 32 41 39', color: '#c084fc', width: 5.1, label: '左上悬空点 · 过滤器与天时', desc: '悬空不粘连：好奇心筛选输入，亦承接时代阳光雨露' },
+            { id: 's2', d: 'M 92 23 Q 84 32 77 40', color: '#38bdf8', width: 5.1, label: '右上悬空撇 · 反馈与他山之石', desc: '悬空回勾：现实撞击回弹的复盘信号与跨界异质视野' },
+            { id: 's3', d: 'M 20 56 L 100 56 M 60 18 L 60 104', color: '#f5c469', width: 4.4, label: '中枢十字 · 精炼内核', desc: '经脱壳提纯后的高密度知行中枢' },
+            { id: 's4', d: 'M 58 58 Q 42 80 20 98 M 62 58 Q 78 80 100 98', color: '#4ade80', width: 4.4, label: '底部双根 · 稳固底座', desc: '与主干紧密相连的扎实资源支撑' }
+          ]
+        },
+        '来': {
+          strokes: [
+            { id: 's1', d: 'M 26 24 L 94 24', color: '#f5c469', width: 5.6, label: '元标尺「一」· 顶层愿景之横', desc: '高维重逢于「一」，将散落反馈与天时收束归于大道' },
+            { id: 's2', d: 'M 33 34 Q 39 40 44 45 M 87 33 Q 81 40 76 45', color: '#c084fc', width: 4.4, label: '收束双笔 · 汇聚机缘', desc: '原本飘散的灵感与反馈在愿景之下同频聚拢' },
+            { id: 's3', d: 'M 18 58 L 102 58 M 60 16 L 60 104', color: '#9fd8ea', width: 4.2, label: '通天中轴 · 知行贯通', desc: '从底层实干直抵顶层愿景的一以贯之' },
+            { id: 's4', d: 'M 58 60 Q 42 82 20 98 M 62 60 Q 78 82 100 98', color: '#4ade80', width: 4.2, label: '稳固双足 · 引力底座', desc: '高密度系统稳稳扎根，令良机与未来自来' }
+          ]
+        }
+      };
+
+      /* =======================================================================
+         四、10 字「简繁双镜」三栏对照数据（100% 锁定原稿）
+         ======================================================================= */
+      const DUAL_MIRRORS = {
+        '来': {
+          pair: '来 / 來',
+          simpChar: '来', simpDesc: '「米」顶复现一横：以顶层愿景收束高密结晶，势能反转令万象自来。',
+          tradChar: '來', tradDesc: '「木」旁双「人」栖息：栽好梧桐大树，同频知音与良机自然来归。',
+          synth: '简体收束「米」之星核，繁体映照双人栖「木」——一字双镜，贯通根系与化境。'
+        },
+        '干': {
+          pair: '干 / 幹',
+          simpChar: '干', simpDesc: '「十」顶加横：压实心神先干起来，亦时刻警醒勿令认知自满封顶。',
+          tradChar: '幹', tradDesc: '深植沃土而顶天立地之主干：象征支撑整座大厦的硬核栋梁。',
+          synth: '起手先以「干」压实落地破除空想，久修终成扛起全局的「幹」之栋梁。'
+        },
+        '粮': {
+          pair: '粮 / 糧',
+          simpChar: '粮', simpDesc: '「米」配「良」：重在筛选精良品质，唯优米方值得留存储备。',
+          tradChar: '糧', tradDesc: '「米」配「量」：重在厚积储备体量，有充足存量方能穿越寒冬。',
+          synth: '真正让人心中不慌的过冬资产，既要「良」的高纯品质，也要「量」的规模厚度。'
+        },
+        '断': {
+          pair: '断 / 斷',
+          simpChar: '断', simpDesc: '举斧（斤）劈开「米」：利落砍掉低效产出与冗余项目。',
+          tradChar: '斷', tradDesc: '举斧斩断纠缠之「𢇍」：切断背后千丝万缕的路径依赖与旧因果。',
+          synth: '表层断的是耗神琐事，深层断的是纠缠心智的旧习与沉没成本。'
+        },
+        '继': {
+          pair: '继 / 繼',
+          simpChar: '继', simpDesc: '以「纟」串联散落之「米」：把点状作品串成持续复利的珠链。',
+          tradChar: '繼', tradDesc: '丝缕绵延不断、首尾相承：强调底层精神脉络与长期主义的赓续。',
+          synth: '外在的「米」可随时代灵活迭代，内在那条绵延的丝脉须始终一以贯之。'
+        },
+        '类': {
+          pair: '类 / 類',
+          simpChar: '类', simpDesc: '「米」下托「大」：将独特结晶放大格局，自成一派定义新品类。',
+          tradChar: '類', tradDesc: '从「米」从「頁」（头面标识）：拥有鲜明辨识度与独立旗帜，物以类聚。',
+          synth: '既有撑大格局之「大」，又有过目难忘之「頁」，自然凝聚属于自己的同频族群。'
+        },
+        '氣': {
+          pair: '气 / 氣',
+          simpChar: '气', simpDesc: '仅见云气流动之姿，轻盈飘逸却容易失却底层依托。',
+          tradChar: '氣', tradDesc: '云气之下深藏「米」核：必先有扎实干货之米，文火蒸腾方能化作浩然气场。',
+          synth: '无「米」之气是虚浮空话，有「米」之「氣」才是令人心折的厚重场域。'
+        },
+        '糰': {
+          pair: '团 / 糰',
+          simpChar: '团', simpDesc: '四方围框包「才」：易让人只见外部边界，忽略内部真正黏合的养分。',
+          tradChar: '糰', tradDesc: '「米」字当头捏合抱团：点明社群凝聚力的根本来自饱满温润的价值结晶。',
+          synth: '唯有先修出可滋养他人的「米」，人群才不是松散空壳，而是心意相通之「糰」。'
+        },
+        '樂': {
+          pair: '乐 / 樂',
+          simpChar: '乐', simpDesc: '勾勒出轻快灵动之姿，呈现愉悦舒展的情绪表象。',
+          tradChar: '樂', tradDesc: '丝弦稳稳张于「木」座之上：揭示长久心流与欢喜离不开稳固系统的托举。',
+          synth: '一时兴起是轻飘之「乐」，扎稳根系后源源不断奏出的韵律，才是深厚之「樂」。'
+        },
+        '鬱': {
+          pair: '郁 / 鬱',
+          simpChar: '郁', simpDesc: '简明示意沉闷闭塞之感，却隐去了内里纠结的真正根源。',
+          tradChar: '鬱', tradDesc: '双「木」葱郁成林却被密闭屋室围堵：精准写尽高积蓄、无出口的丰盛内耗。',
+          synth: '看见「鬱」里那两棵茂盛之木，便知破局不在否定积累，而在痛快打开表达出口。'
+        }
+      };
+
+      /* =======================================================================
+         五、「壹至玖」九章漫游剧本（100% 锁定原稿）
+         ======================================================================= */
+      const TOUR_CHAPTERS = [
+        {
+          numeral: '壹',
+          title: '源流未分',
+          body: '源流之初，讯息顺着「一」的水平流光直入直出，宛如本能主导的线性惯性。这颗西南孤星既是一切演化的起点，也是暗藏于星海各境的校准元标尺。',
+          focus: ['一'],
+          openId: '一',
+          scale: 1.04,
+          metaRuler: false
+        },
+        {
+          numeral: '贰',
+          title: '知行截流',
+          body: '一道清峻竖光直劈线性惯性，上启认知洞察，下沉执行能力。流光于此被截留点亮，纵横交汇的十字中心，真正的思考与价值处理由此发生。',
+          focus: ['十'],
+          openId: '十',
+          scale: 1.02,
+          metaRuler: false
+        },
+        {
+          numeral: '叁',
+          title: '校准初萌',
+          body: '中枢周遭轻盈悬布知行校准五星：「士」重道轻行、「土」厚土深耕、「干」实干封顶、「千」杠杆倍增；而「才」静悬于奔向根系的弧脉之上，破土初萌、锐气初露。',
+          focus: ['士', '土', '干', '千', '才'],
+          openId: '才',
+          scale: 0.84,
+          metaRuler: false
+        },
+        {
+          numeral: '肆',
+          title: '扎根成系',
+          body: '撇捺向沃土左右舒展，长成自我站立的「木」。以「本、末、未」定盘候时，借「休、林、森」与繁体遗珠「樂」生发协作心流，同时明察「困、呆、枯、鬱」四面根系暗礁。',
+          focus: ['木', '本', '末', '未', '休', '林', '森', '樂', '困', '呆', '枯', '鬱'],
+          openId: '木',
+          scale: 0.68,
+          metaRuler: false
+        },
+        {
+          numeral: '伍',
+          title: '枝头原实',
+          body: '根系深扎、枝叶舒展之后，终在树梢结出带着皮壳的原始战果「果」——跑通真实项目、交付完整作品；唯有历经原实的熟化与脱壳提纯，方能步入星核之境。',
+          focus: ['果', '木', '米'],
+          openId: '果',
+          scale: 0.86,
+          metaRuler: false
+        },
+        {
+          numeral: '陆',
+          title: '高密结晶',
+          body: '抵达星海核心「米」：底部撇捺紧连主干，上方两笔悬空不与十字粘连，恰似持续照耀系统的外部反馈、跨界视野与时代雨露，将历练压缩为滋养世人的高密结晶。',
+          focus: ['米'],
+          openId: '米',
+          scale: 0.96,
+          metaRuler: false
+        },
+        {
+          numeral: '柒',
+          title: '塑形与交付',
+          body: '由星核向外舒展两片繁茂星海：下方以「粗、粒、料、精、粹」完成形态打磨；右侧借「粥、粉、糖、粘」与繁体遗珠「糰」慢熬降维、渗透共鸣，终至聚散成群。',
+          focus: ['粗', '粒', '料', '精', '粹', '粥', '粉', '糖', '粘', '糰'],
+          openId: '粥',
+          scale: 0.66,
+          metaRuler: false
+        },
+        {
+          numeral: '捌',
+          title: '壁垒与代谢',
+          body: '向上修筑长期壁垒：「粮」蓄过冬资产、「奥」守深水壁垒、「断」斩断沉没、「继」串联复利；向下亦须直面系统暗面，警醒「迷」之失焦，定期排清「糟」「粕」废渣。',
+          focus: ['粮', '奥', '断', '继', '迷', '糟', '粕'],
+          openId: '粮',
+          scale: 0.6,
+          metaRuler: false
+        },
+        {
+          numeral: '玖',
+          title: '化境与复归于一',
+          body: '星海之巅高悬紫金冠冕：「来」万象自来、「番」播入现实、「氣」化形为场、「类」自成一派。全景拉远，流动铂金星轨点亮七星元标尺——起于一，历经分化、扎根、绽放，终在更高维度重逢一。',
+          focus: ['来', '番', '氣', '类', '一', '士', '土', '干', '本', '末'],
+          openId: '来',
+          overview: true,
+          metaRuler: true
+        }
+      ];
+
+      /* =======================================================================
+         六、全局状态与 DOM 引用
+         ======================================================================= */
+      const state = {
+        selectedId: null,
+        hoveredId: null,
+        activeFilter: 'all',
+        showStarNotes: true,
+        metaRulerActive: false,
+        tourActive: false,
+        tourIndex: 0,
+        tourFocusSet: null,
+        jumpArc: null,
+        jumpTimer: null,
+        yiPulseTimer: null,
+        fitScale: 0.5,
+        camera: { tx: 0, ty: 0, scale: 0.5 },
+        animId: null
+      };
+
+      let axisPulsePathStr = '';
+
+      const mapStage = document.getElementById('mapStage');
+      const viewportGroup = document.getElementById('viewportGroup');
+      const auraLayer = document.getElementById('auraLayer');
+      const staticEdgesLayer = document.getElementById('staticEdgesLayer');
+      const mainAxisLayer = document.getElementById('mainAxisLayer');
+      const metaRulerLayer = document.getElementById('metaRulerLayer');
+      const dynamicLinksLayer = document.getElementById('dynamicLinksLayer');
+      const marginaliaLayer = document.getElementById('marginaliaLayer');
+      const nodesLayer = document.getElementById('nodesLayer');
+
+      const starNoteBtn = document.getElementById('starNoteBtn');
+      const metaRulerBtn = document.getElementById('metaRulerBtn');
+      const metaBanner = document.getElementById('metaBanner');
+      const closeMetaBannerBtn = document.getElementById('closeMetaBannerBtn');
+      const tourBtn = document.getElementById('tourBtn');
+
+      const zoomCapsule = document.getElementById('zoomCapsule');
+      const zoomInBtn = document.getElementById('zoomInBtn');
+      const zoomOutBtn = document.getElementById('zoomOutBtn');
+      const zoomResetBtn = document.getElementById('zoomResetBtn');
+
+      const filterBar = document.getElementById('filterBar');
+      const searchInput = document.getElementById('searchInput');
+      const searchClearBtn = document.getElementById('searchClearBtn');
+      const searchDropdown = document.getElementById('searchDropdown');
+
+      const tourCard = document.getElementById('tourCard');
+      const tourNumeral = document.getElementById('tourNumeral');
+      const tourTitle = document.getElementById('tourTitle');
+      const tourBody = document.getElementById('tourBody');
+      const tourDots = document.getElementById('tourDots');
+      const tourPrevBtn = document.getElementById('tourPrevBtn');
+      const tourNextBtn = document.getElementById('tourNextBtn');
+      const tourCloseBtn = document.getElementById('tourCloseBtn');
+
+      const detailDrawer = document.getElementById('detailDrawer');
+      const drawerContent = document.getElementById('drawerContent');
+      const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+
+      const hoverTooltip = document.getElementById('hoverTooltip');
+      const ttGlyph = document.getElementById('ttGlyph');
+      const ttNote = document.getElementById('ttNote');
+      const ttSeal = document.getElementById('ttSeal');
+      const ttTag = document.getElementById('ttTag');
+
+      function getNodeColor(node) {
+        if (node.domain === 'wood' && node.isBottleneck) {
+          return DOMAINS.wood.warnColor;
+        }
+        return DOMAINS[node.domain].color;
+      }
+
+      function getNodeTint(node) {
+        if (node.domain === 'wood' && node.isBottleneck) {
+          return DOMAINS.wood.warnTint;
+        }
+        return DOMAINS[node.domain].tint;
+      }
+
+      /* =======================================================================
+         七、底层轻缓呼吸微尘星点 Canvas
+         ======================================================================= */
+      function initStarfieldCanvas() {
+        try {
+          const canvas = document.getElementById('bgCanvas');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return;
+
+          let stars = [];
+          let width = 0;
+          let height = 0;
+
+          function buildStars() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = Math.floor(width * dpr);
+            canvas.height = Math.floor(height * dpr);
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            const count = Math.min(185, Math.max(88, Math.floor((width * height) / 10800)));
+            stars = [];
+            for (let i = 0; i < count; i++) {
+              const pick = Math.random();
+              let color = '224, 232, 246';
+              if (pick > 0.82) color = '245, 196, 105';
+              else if (pick > 0.68) color = '166, 218, 255';
+              else if (pick > 0.58) color = '196, 160, 255';
+              stars.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                r: Math.random() * 1.4 + 0.35,
+                baseAlpha: Math.random() * 0.44 + 0.12,
+                speed: Math.random() * 0.0011 + 0.00032,
+                phase: Math.random() * Math.PI * 2,
+                color
+              });
+            }
+          }
+
+          function draw(ts) {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < stars.length; i++) {
+              const s = stars[i];
+              const alpha = s.baseAlpha + Math.sin(ts * s.speed + s.phase) * 0.18;
+              ctx.fillStyle = `rgba(${s.color}, ${Math.max(0.04, Math.min(0.84, alpha))})`;
+              ctx.beginPath();
+              ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            window.requestAnimationFrame(draw);
+          }
+
+          buildStars();
+          window.addEventListener('resize', buildStars);
+          window.requestAnimationFrame(draw);
+        } catch (err) {
+          console.error('Starfield initialization error:', err);
+        }
+      }
+
+      /* =======================================================================
+         八、构建 SVG 星图（纯净主脉止于「米」、高维四星平权微丝、竖排柔色边款）
+         ======================================================================= */
+      function buildStarMap() {
+        const yi = NODE_MAP['一'];
+        const shi = NODE_MAP['十'];
+        const mu = NODE_MAP['木'];
+        const mi = NODE_MAP['米'];
+
+        // 1. 柔和径向星云晕染（纯净星象，无任何具象田字或插画装饰）
+        auraLayer.appendChild(svgEl('circle', {
+          cx: mi.x, cy: mi.y, r: 420,
+          fill: 'url(#miSupernova)',
+          class: 'mi-pulse'
+        }));
+        for (let i = 0; i < 8; i++) {
+          const angle = (i * Math.PI) / 4;
+          auraLayer.appendChild(svgEl('line', {
+            x1: mi.x + Math.cos(angle) * 76,
+            y1: mi.y + Math.sin(angle) * 76,
+            x2: mi.x + Math.cos(angle) * 230,
+            y2: mi.y + Math.sin(angle) * 230,
+            stroke: '#f5c469',
+            'stroke-width': 0.85,
+            opacity: 0.13,
+            'stroke-dasharray': '3 6'
+          }));
+        }
+
+        auraLayer.appendChild(svgEl('circle', { cx: shi.x, cy: shi.y, r: 235, fill: 'url(#calibAura)' }));
+        auraLayer.appendChild(svgEl('circle', { cx: mu.x, cy: mu.y, r: 350, fill: 'url(#woodAura)' }));
+        auraLayer.appendChild(svgEl('circle', { cx: 1785, cy: 1015, r: 250, fill: 'url(#craftAura)' }));
+        auraLayer.appendChild(svgEl('circle', { cx: 2275, cy: 695, r: 260, fill: 'url(#deliveryAura)' }));
+        auraLayer.appendChild(svgEl('circle', { cx: 2135, cy: 345, r: 225, fill: 'url(#moatAura)' }));
+        auraLayer.appendChild(svgEl('circle', { cx: 1765, cy: 1265, r: 210, fill: 'url(#shadowAura)' }));
+        auraLayer.appendChild(svgEl('circle', { cx: 1645, cy: 295, r: 280, fill: 'url(#leapAura)' }));
+
+        // 「十」垂直截流清光柱
+        auraLayer.appendChild(svgEl('rect', {
+          x: shi.x - 10.5, y: shi.y - 210, width: 21, height: 420, rx: 10.5,
+          fill: 'url(#shiPillarGrad)',
+          opacity: 0.56
+        }));
+        auraLayer.appendChild(svgEl('line', {
+          x1: shi.x, y1: shi.y - 218, x2: shi.x, y2: shi.y + 218,
+          stroke: '#f5c469', 'stroke-width': 1.05, opacity: 0.26, 'stroke-dasharray': '4 5'
+        }));
+
+        // 2. 演化主脉流光弧：纯净收束于「米」（一 → 十 → 木 → 米，移除「米 → 来」竖直主脉线）
+        axisPulsePathStr = `M ${yi.x} ${yi.y} L ${shi.x} ${shi.y} Q 748 830 ${mu.x} ${mu.y} Q 1366 694 ${mi.x} ${mi.y}`;
+        const mainPaths = [
+          { d: `M ${yi.x} ${yi.y} L ${shi.x} ${shi.y}`, w: 3.2, op: 0.78, stroke: 'url(#yiBeamGrad)' },
+          { d: `M ${shi.x} ${shi.y} Q 748 830 ${mu.x} ${mu.y}`, w: 3.6, op: 0.82, stroke: 'url(#mainAxisGrad)' },
+          { d: `M ${mu.x} ${mu.y} Q 1366 694 ${mi.x} ${mi.y}`, w: 4.0, op: 0.9, stroke: 'url(#mainAxisGrad)' }
+        ];
+        mainPaths.forEach(p => {
+          mainAxisLayer.appendChild(svgEl('path', {
+            d: p.d, fill: 'none', stroke: p.stroke,
+            'stroke-width': p.w + 4, opacity: p.op * 0.22, 'stroke-linecap': 'round'
+          }));
+          mainAxisLayer.appendChild(svgEl('path', {
+            d: p.d, fill: 'none', stroke: p.stroke,
+            'stroke-width': p.w, opacity: p.op, 'stroke-linecap': 'round', filter: 'url(#glowSoft)'
+          }));
+          mainAxisLayer.appendChild(svgEl('path', {
+            d: p.d, fill: 'none', stroke: '#fff6dd',
+            'stroke-width': 1.4, opacity: p.op * 0.85, class: 'flow-line'
+          }));
+        });
+
+        // 3. 静态星轨细线（高维化境四星：来、番、氣、类 以同等纤细紫金微丝平权连回「米」）
+        const satelliteEdges = [
+          ['十', '士'], ['十', '土'], ['十', '干'], ['十', '千'],
+          ['木', '本'], ['木', '末'], ['木', '未'], ['木', '休'],
+          ['木', '林'], ['林', '森'], ['木', '樂'], ['休', '樂'],
+          ['木', '困'], ['木', '呆'], ['木', '枯'], ['木', '鬱'], ['困', '枯'],
+          ['米', '粗'], ['粗', '粒'], ['粒', '料'], ['料', '精'], ['精', '粹'], ['米', '精'],
+          ['米', '粥'], ['粥', '粉'], ['粉', '糖'], ['糖', '粘'], ['粘', '糰'], ['米', '粘'], ['粥', '糖'],
+          ['米', '粮'], ['粮', '奥'], ['奥', '断'], ['断', '继'], ['米', '继'], ['粮', '继'],
+          ['米', '迷'], ['迷', '糟'], ['糟', '粕'], ['米', '糟'],
+          ['米', '来'], ['米', '番'], ['米', '氣'], ['米', '类'],
+          ['来', '番'], ['来', '氣'], ['番', '类']
+        ];
+
+        satelliteEdges.forEach(([fromId, toId]) => {
+          const a = NODE_MAP[fromId];
+          const b = NODE_MAP[toId];
+          if (!a || !b) return;
+          const isCrownSpoke = fromId === '米' && b.domain === 'leap';
+          const color = isCrownSpoke ? '#c084fc' : getNodeColor(b);
+          const mx = (a.x + b.x) / 2;
+          const my = (a.y + b.y) / 2;
+          const bend = isCrownSpoke ? 0.06 : 0.08;
+          const cx = mx - (b.y - a.y) * bend;
+          const cy = my + (b.x - a.x) * bend;
+          staticEdgesLayer.appendChild(svgEl('path', {
+            d: `M ${a.x} ${a.y} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${b.x} ${b.y}`,
+            fill: 'none',
+            stroke: color,
+            'stroke-width': isCrownSpoke ? 1.25 : 1.15,
+            'stroke-linecap': 'round',
+            opacity: isCrownSpoke ? 0.28 : 0.22,
+            'data-from': fromId,
+            'data-to': toId,
+            'data-crown-spoke': isCrownSpoke ? '1' : '0',
+            class: 'static-edge'
+          }));
+        });
+
+        // 4. 七星「一」元标尺流动铂金星轨（一 → 士·土·干 → 本·末 → 来）
+        const metaPairs = [
+          ['一', '士', -0.18],
+          ['一', '土', 0.16],
+          ['一', '干', -0.1],
+          ['士', '末', -0.14],
+          ['土', '本', 0.12],
+          ['干', '本', 0.06],
+          ['本', '末', -0.16],
+          ['末', '来', -0.18],
+          ['本', '来', 0.14]
+        ];
+        metaPairs.forEach(([fromId, toId, bend]) => {
+          const a = NODE_MAP[fromId];
+          const b = NODE_MAP[toId];
+          if (!a || !b) return;
+          const mx = (a.x + b.x) / 2;
+          const my = (a.y + b.y) / 2;
+          const cx = mx - (b.y - a.y) * bend;
+          const cy = my + (b.x - a.x) * bend;
+          const d = `M ${a.x} ${a.y} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${b.x} ${b.y}`;
+          metaRulerLayer.appendChild(svgEl('path', {
+            d, fill: 'none', stroke: 'url(#metaRulerGrad)',
+            'stroke-width': 3.2, opacity: 0.28, filter: 'url(#glowGold)'
+          }));
+          metaRulerLayer.appendChild(svgEl('path', {
+            d, fill: 'none', stroke: 'url(#metaRulerGrad)',
+            'stroke-width': 1.8, opacity: 0.94, class: 'meta-flow-line'
+          }));
+        });
+
+        // 5. 七大外绕星域：竖排柔色边款（全览 0.70 ↔ 放大细读 0.50 缩放呼吸）
+        Object.values(DOMAINS).forEach(dom => {
+          if (!dom.marginalia) return;
+          const m = dom.marginalia;
+          const mg = svgEl('g', {
+            transform: `translate(${m.x}, ${m.y})`,
+            opacity: 0.70,
+            filter: 'url(#marginaliaShadow)',
+            'data-domain-marginalia': dom.id,
+            class: 'domain-marginalia'
+          });
+
+          mg.appendChild(svgEl('circle', {
+            cx: 0, cy: -25, r: 2.0,
+            fill: m.tint, opacity: 0.92
+          }));
+          mg.appendChild(svgEl('line', {
+            x1: 0, y1: -20, x2: 0, y2: -6,
+            stroke: m.tint, 'stroke-width': 1.05, 'stroke-linecap': 'round', opacity: 0.84
+          }));
+
+          const textEl = svgEl('text', {
+            x: 0, y: 10,
+            'text-anchor': 'middle',
+            fill: m.tint,
+            'font-size': 16.5,
+            class: 'marginalia-text'
+          });
+          Array.from(m.text).forEach((ch, idx) => {
+            const tspan = svgEl('tspan', { x: 0, dy: idx === 0 ? '0' : '24' });
+            tspan.textContent = ch;
+            textEl.appendChild(tspan);
+          });
+          mg.appendChild(textEl);
+          marginaliaLayer.appendChild(mg);
+        });
+
+        // 6. 渲染全部 42 颗星宿节点
+        NODES.forEach(node => {
+          const accent = getNodeColor(node);
+          const isCore = node.domain === 'core';
+          const isMi = node.id === '米';
+          const isMeta = META_RULER_SET.has(node.id);
+          const isTrad = TRADITIONAL_SET.has(node.id);
+
+          const g = svgEl('g', {
+            transform: `translate(${node.x}, ${node.y})`,
+            class: 'star-node',
+            'data-id': node.id,
+            'data-domain': node.domain
+          });
+
+          const bodyG = svgEl('g', { class: 'node-body' });
+
+          // 选中外虚光环
+          bodyG.appendChild(svgEl('circle', {
+            cx: 0, cy: 0, r: node.r + 10,
+            fill: 'none', stroke: accent,
+            'stroke-width': 2.1, 'stroke-dasharray': '5 4',
+            opacity: 0, filter: 'url(#glowSoft)',
+            class: 'selected-ring'
+          }));
+
+          // 七星元标尺铂金外环
+          if (isMeta) {
+            bodyG.appendChild(svgEl('circle', {
+              cx: 0, cy: 0, r: node.r + 14,
+              fill: 'none', stroke: '#fef0c7',
+              'stroke-width': 1.8, opacity: 0,
+              filter: 'url(#glowGold)',
+              class: 'meta-ring'
+            }));
+          }
+
+          // 柔和星晕
+          bodyG.appendChild(svgEl('circle', {
+            cx: 0, cy: 0, r: node.r + (isMi ? 8 : 4),
+            fill: accent,
+            opacity: isMi ? 0.19 : (isCore ? 0.14 : 0.08)
+          }));
+
+          // 深靛实底圆盘
+          bodyG.appendChild(svgEl('circle', {
+            cx: 0, cy: 0, r: node.r,
+            fill: isMi ? '#151c33' : (isCore ? '#10182d' : '#0b1224'),
+            stroke: accent,
+            'stroke-width': isMi ? 2.8 : (isCore ? 2.2 : 1.5),
+            filter: isCore ? 'url(#glowSoft)' : null
+          }));
+
+          // 主脉与「来」冠冕细内环
+          if (isCore || node.id === '来') {
+            bodyG.appendChild(svgEl('circle', {
+              cx: 0, cy: 0, r: node.r - 5,
+              fill: 'none', stroke: accent,
+              'stroke-width': 0.7, opacity: 0.42
+            }));
+          }
+
+          // 汉字本体（居中宋体）
+          const glyph = svgEl('text', {
+            x: 0, y: 1,
+            'text-anchor': 'middle',
+            'dominant-baseline': 'central',
+            fill: isCore ? '#fff6e0' : '#f4efe6',
+            'font-size': isMi ? 38 : (isCore ? Math.round(node.r * 0.78) : Math.round(node.r * 0.86)),
+            class: 'star-glyph'
+          });
+          glyph.textContent = node.id;
+          bodyG.appendChild(glyph);
+
+          // 仅四枚繁体遗珠（樂、鬱、糰、氣）右上角附极小朱砂方印「繁」
+          if (isTrad) {
+            const sx = node.r * 0.56;
+            const sy = -node.r * 0.96;
+            const sealG = svgEl('g', {
+              transform: `translate(${sx}, ${sy})`,
+              style: 'pointer-events: none;'
+            });
+            sealG.appendChild(svgEl('rect', {
+              x: 0, y: 0, width: 15.5, height: 15.5, rx: 2.4,
+              fill: '#c23b2b', stroke: '#f4a498', 'stroke-width': 0.75
+            }));
+            const sealTxt = svgEl('text', {
+              x: 7.75, y: 8.2,
+              'text-anchor': 'middle',
+              'dominant-baseline': 'central',
+              fill: '#fff7ee',
+              'font-size': 9.2,
+              class: 'star-glyph'
+            });
+            sealTxt.textContent = '繁';
+            sealG.appendChild(sealTxt);
+            bodyG.appendChild(sealG);
+          }
+
+          g.appendChild(bodyG);
+
+          // 全部 42 星宿四字星注统一置于圆环正下方
+          const noteY = node.r + (isMi ? 22 : (isCore ? 19 : 16));
+          const noteG = svgEl('g', { class: 'star-note-group star-note-visible' });
+          const noteTxt = svgEl('text', {
+            x: 0, y: noteY,
+            'text-anchor': 'middle',
+            'dominant-baseline': 'central',
+            fill: isCore ? 'rgba(249, 232, 196, 0.88)' : 'rgba(222, 224, 232, 0.74)',
+            'font-size': isMi ? 13 : (isCore ? 12 : 11),
+            'letter-spacing': '0.11em',
+            class: 'star-note-text'
+          });
+          noteTxt.textContent = node.note;
+          noteG.appendChild(noteTxt);
+          g.appendChild(noteG);
+
+          // 节点交互（「一」节点与元标尺解耦：仅静开档案并送出约 1.1 秒主脉流光脉冲）
+          g.addEventListener('mouseenter', (e) => {
+            state.hoveredId = node.id;
+            showTooltip(node, e);
+            updateVisuals();
+          });
+          g.addEventListener('mousemove', (e) => moveTooltip(e));
+          g.addEventListener('mouseleave', () => {
+            if (state.hoveredId === node.id) state.hoveredId = null;
+            hideTooltip();
+            updateVisuals();
+          });
+          g.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (dragMoved) return;
+            if (state.tourActive) stopTour(false);
+            if (node.id === '一') {
+              triggerYiPulse();
+            }
+            selectNode(node.id, true, true);
+          });
+          g.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
+            focusNodesSmooth([node.id], 1.12);
+          });
+
+          nodesLayer.appendChild(g);
+        });
+      }
+
+      /* 点击「一」沿演化主脉（一 → 十 → 木 → 米）向右送出约 1.1 秒柔和金色流光脉冲 */
+      function triggerYiPulse() {
+        if (state.yiPulseTimer) clearTimeout(state.yiPulseTimer);
+        const existing = mainAxisLayer.querySelector('.yi-pulse-path');
+        if (existing) existing.remove();
+
+        const pulse = svgEl('path', {
+          d: axisPulsePathStr,
+          fill: 'none',
+          stroke: '#fef3c7',
+          'stroke-width': 4.4,
+          'stroke-linecap': 'round',
+          filter: 'url(#glowGold)',
+          class: 'yi-pulse-path'
+        });
+        mainAxisLayer.appendChild(pulse);
+        state.yiPulseTimer = setTimeout(() => {
+          pulse.remove();
+        }, 1150);
+      }
+
+      /* =======================================================================
+         九、全局视觉状态同步与七大竖排边款缩放呼吸（0.70 ↔ 0.50）
+         ======================================================================= */
+      function nodeMatchesFilter(node) {
+        if (state.activeFilter === 'all') return true;
+        if (state.activeFilter === 'relics') return Boolean(node.isTraditional);
+        return node.domain === state.activeFilter;
+      }
+
+      function updateMarginaliaOpacity() {
+        const relZoom = state.camera.scale / Math.max(0.05, state.fitScale);
+        const t = Math.max(0, Math.min(1, (relZoom - 1.0) / 0.85));
+        const breathOp = 0.70 - t * (0.70 - 0.50);
+
+        marginaliaLayer.querySelectorAll('.domain-marginalia').forEach(mg => {
+          const domId = mg.getAttribute('data-domain-marginalia');
+          let targetOp = breathOp;
+
+          if (!state.showStarNotes) {
+            targetOp = 0;
+          } else if (state.metaRulerActive) {
+            targetOp = 0.08;
+          } else if (state.activeFilter !== 'all') {
+            if (state.activeFilter === 'relics' || state.activeFilter === 'core') {
+              targetOp = 0.08;
+            } else {
+              targetOp = domId === state.activeFilter ? 0.82 : 0.08;
+            }
+          } else if (state.tourActive && state.tourFocusSet) {
+            let domInTour = false;
+            state.tourFocusSet.forEach(fid => {
+              if (NODE_MAP[fid] && NODE_MAP[fid].domain === domId) domInTour = true;
+            });
+            targetOp = domInTour ? Math.min(0.80, breathOp + 0.08) : 0.08;
+          }
+
+          mg.style.opacity = targetOp.toFixed(3);
+        });
+      }
+
+      function updateVisuals() {
+        starNoteBtn.classList.toggle('is-active', state.showStarNotes);
+        starNoteBtn.classList.toggle('is-muted', !state.showStarNotes);
+        starNoteBtn.setAttribute('aria-pressed', String(state.showStarNotes));
+
+        metaRulerBtn.classList.toggle('is-active', state.metaRulerActive);
+        metaRulerBtn.setAttribute('aria-pressed', String(state.metaRulerActive));
+        metaBanner.classList.toggle('visible', state.metaRulerActive);
+        metaRulerLayer.setAttribute('opacity', state.metaRulerActive ? '1' : '0');
+
+        tourBtn.classList.toggle('is-active', state.tourActive);
+        tourBtn.setAttribute('aria-pressed', String(state.tourActive));
+
+        const focusId = state.hoveredId || state.selectedId;
+        const focusNode = focusId ? NODE_MAP[focusId] : null;
+        const relatedSet = focusNode ? new Set([focusNode.id, ...focusNode.related]) : null;
+
+        // 1. 同步 42 颗星宿与下方四字星注
+        nodesLayer.querySelectorAll('.star-node').forEach(g => {
+          const id = g.getAttribute('data-id');
+          const node = NODE_MAP[id];
+          const selRing = g.querySelector('.selected-ring');
+          const metaRing = g.querySelector('.meta-ring');
+          const noteG = g.querySelector('.star-note-group');
+          const noteTxt = g.querySelector('.star-note-text');
+
+          const isSelected = id === state.selectedId || (state.tourFocusSet && state.tourFocusSet.has(id));
+          selRing.setAttribute('opacity', isSelected ? '0.94' : '0');
+          if (metaRing) {
+            metaRing.setAttribute('opacity', state.metaRulerActive ? '0.95' : '0');
+          }
+
+          let opacity = 1;
+          if (state.metaRulerActive) {
+            opacity = META_RULER_SET.has(id) ? 1 : 0.16;
+          } else if (state.tourActive && state.tourFocusSet) {
+            opacity = state.tourFocusSet.has(id) ? 1 : 0.22;
+          } else if (state.activeFilter !== 'all') {
+            opacity = nodeMatchesFilter(node) ? 1 : 0.16;
+          } else if (relatedSet) {
+            opacity = relatedSet.has(id) ? 1 : 0.34;
+          }
+          g.style.opacity = String(opacity);
+
+          const isTempReveal =
+            id === state.hoveredId ||
+            id === state.selectedId ||
+            (state.tourActive && state.tourFocusSet && state.tourFocusSet.has(id)) ||
+            (state.metaRulerActive && META_RULER_SET.has(id));
+          const showNote = state.showStarNotes || isTempReveal;
+
+          if (noteG && noteTxt) {
+            noteG.classList.toggle('star-note-visible', showNote);
+            noteG.classList.toggle('star-note-hidden', !showNote);
+            if (!state.showStarNotes && isTempReveal) {
+              noteTxt.setAttribute('fill', '#fde68a');
+            } else {
+              noteTxt.setAttribute(
+                'fill',
+                node.domain === 'core' ? 'rgba(249, 232, 196, 0.88)' : 'rgba(222, 224, 232, 0.74)'
+              );
+            }
+          }
+        });
+
+        // 2. 同步静态星轨透明度
+        staticEdgesLayer.querySelectorAll('.static-edge').forEach(edge => {
+          const from = edge.getAttribute('data-from');
+          const to = edge.getAttribute('data-to');
+          const isCrownSpoke = edge.getAttribute('data-crown-spoke') === '1';
+          const baseOp = isCrownSpoke ? '0.28' : '0.22';
+
+          if (state.metaRulerActive) {
+            edge.setAttribute('opacity', '0.05');
+          } else if (state.tourActive && state.tourFocusSet) {
+            const lit = state.tourFocusSet.has(from) && state.tourFocusSet.has(to);
+            edge.setAttribute('opacity', lit ? '0.46' : '0.06');
+          } else if (state.activeFilter !== 'all') {
+            if (state.activeFilter === 'core') {
+              edge.setAttribute('opacity', '0.05');
+            } else {
+              const lit =
+                (nodeMatchesFilter(NODE_MAP[from]) && nodeMatchesFilter(NODE_MAP[to])) ||
+                (from === '米' && nodeMatchesFilter(NODE_MAP[to])) ||
+                (from === '木' && nodeMatchesFilter(NODE_MAP[to])) ||
+                (from === '十' && nodeMatchesFilter(NODE_MAP[to]));
+              edge.setAttribute('opacity', lit ? '0.44' : '0.06');
+            }
+          } else if (focusNode) {
+            const lit = from === focusNode.id || to === focusNode.id;
+            edge.setAttribute('opacity', lit ? '0.52' : '0.1');
+          } else {
+            edge.setAttribute('opacity', baseOp);
+          }
+        });
+
+        const axisDim = state.metaRulerActive ||
+          (state.activeFilter !== 'all' && state.activeFilter !== 'core' && state.activeFilter !== 'calib' && state.activeFilter !== 'wood');
+        mainAxisLayer.style.opacity = axisDim ? '0.2' : '1';
+
+        // 3. 同步七大外绕星域竖排柔色边款呼吸透明度
+        updateMarginaliaOpacity();
+
+        // 4. 动态关联流光弧与跃迁金弧
+        dynamicLinksLayer.innerHTML = '';
+        if (focusNode && !state.metaRulerActive) {
+          const accent = getNodeColor(focusNode);
+          focusNode.related.forEach(targetId => {
+            const target = NODE_MAP[targetId];
+            if (!target) return;
+            const mx = (focusNode.x + target.x) / 2;
+            const my = (focusNode.y + target.y) / 2;
+            const cx = mx - (target.y - focusNode.y) * 0.14;
+            const cy = my + (target.x - focusNode.x) * 0.14;
+            dynamicLinksLayer.appendChild(svgEl('path', {
+              d: `M ${focusNode.x} ${focusNode.y} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${target.x} ${target.y}`,
+              fill: 'none',
+              stroke: accent,
+              'stroke-width': 1.8,
+              opacity: 0.78,
+              filter: 'url(#glowSoft)',
+              class: 'flow-line',
+              style: 'pointer-events: none;'
+            }));
+          });
+        }
+
+        if (state.jumpArc) {
+          const a = NODE_MAP[state.jumpArc.from];
+          const b = NODE_MAP[state.jumpArc.to];
+          if (a && b) {
+            const mx = (a.x + b.x) / 2;
+            const my = (a.y + b.y) / 2;
+            const cx = mx - (b.y - a.y) * 0.18;
+            const cy = my + (b.x - a.x) * 0.18;
+            dynamicLinksLayer.appendChild(svgEl('path', {
+              d: `M ${a.x} ${a.y} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${b.x} ${b.y}`,
+              fill: 'none',
+              stroke: '#fef08a',
+              'stroke-width': 3.2,
+              'stroke-linecap': 'round',
+              filter: 'url(#glowGold)',
+              class: 'jump-arc-flash',
+              style: 'pointer-events: none;'
+            }));
+          }
+        }
+      }
+
+      /* =======================================================================
+         十、画布相机操控与移动端“上赏孤星、下读星笺”运镜联动
+         ======================================================================= */
+      function applyCamera() {
+        viewportGroup.setAttribute(
+          'transform',
+          `translate(${state.camera.tx.toFixed(2)}, ${state.camera.ty.toFixed(2)}) scale(${state.camera.scale.toFixed(4)})`
+        );
+        updateMarginaliaOpacity();
+      }
+
+      function animateCameraTo(targetTx, targetTy, targetScale, duration = 560) {
+        if (state.animId) window.cancelAnimationFrame(state.animId);
+        const startTx = state.camera.tx;
+        const startTy = state.camera.ty;
+        const startScale = state.camera.scale;
+        const startTime = performance.now();
+
+        function step(now) {
+          const t = Math.min(1, (now - startTime) / duration);
+          const ease = 1 - Math.pow(1 - t, 3);
+          state.camera.tx = startTx + (targetTx - startTx) * ease;
+          state.camera.ty = startTy + (targetTy - startTy) * ease;
+          state.camera.scale = startScale + (targetScale - startScale) * ease;
+          applyCamera();
+          if (t < 1) {
+            state.animId = window.requestAnimationFrame(step);
+          } else {
+            state.animId = null;
+          }
+        }
+        state.animId = window.requestAnimationFrame(step);
+      }
+
+      function getVisibleRect() {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const isDesktop = vw > 820;
+        const drawerOpen = detailDrawer.classList.contains('open');
+
+        if (!isDesktop) {
+          const headerEl = document.querySelector('.top-header-shell');
+          const headerBottom = headerEl ? headerEl.getBoundingClientRect().bottom + 8 : 98;
+          if (drawerOpen) {
+            const cardRect = detailDrawer.getBoundingClientRect();
+            const cardTop = cardRect.height > 40 ? cardRect.top : Math.round(vh * 0.38);
+            const skyH = Math.max(92, cardTop - headerBottom - 10);
+            return {
+              left: 14,
+              top: headerBottom,
+              width: Math.max(200, vw - 28),
+              height: skyH
+            };
+          }
+          return {
+            left: 12,
+            top: headerBottom,
+            width: Math.max(200, vw - 24),
+            height: Math.max(200, vh - headerBottom - 72)
+          };
+        }
+
+        const leftPad = 32;
+        const rightPad = drawerOpen ? 440 : 72;
+        const topPad = 114;
+        const bottomPad = 86;
+        return {
+          left: leftPad,
+          top: topPad,
+          width: Math.max(220, vw - leftPad - rightPad),
+          height: Math.max(220, vh - topPad - bottomPad)
+        };
+      }
+
+      function computeFitMetrics() {
+        const rect = getVisibleRect();
+        const minX = 110, maxX = 2545, minY = 95, maxY = 1390;
+        const boxW = maxX - minX;
+        const boxH = maxY - minY;
+        const scale = Math.max(0.16, Math.min(1.15, Math.min(rect.width / boxW, rect.height / boxH) * 0.96));
+        const cx = (minX + maxX) / 2;
+        const cy = (minY + maxY) / 2;
+        return {
+          scale,
+          tx: rect.left + rect.width / 2 - cx * scale,
+          ty: rect.top + rect.height / 2 - cy * scale
+        };
+      }
+
+      function fitToViewport(animated = true) {
+        const m = computeFitMetrics();
+        state.fitScale = m.scale;
+        if (animated) {
+          animateCameraTo(m.tx, m.ty, m.scale, 600);
+        } else {
+          state.camera = { tx: m.tx, ty: m.ty, scale: m.scale };
+          applyCamera();
+        }
+      }
+
+      function focusNodesSmooth(ids, desiredScale = null) {
+        const pts = ids.map(id => NODE_MAP[id]).filter(Boolean);
+        if (!pts.length) return;
+        const rect = getVisibleRect();
+        const isMobile = window.innerWidth <= 820;
+        const drawerOpen = detailDrawer.classList.contains('open');
+
+        // 移动端打开悬浮星笺并聚焦单星：柔和托举孤星居中于卡片上方星空可视区
+        if (isMobile && drawerOpen && pts.length === 1) {
+          const p = pts[0];
+          const targetScale = desiredScale
+            ? Math.min(1.05, Math.max(0.68, desiredScale))
+            : Math.min(0.95, Math.max(0.74, Math.max(state.camera.scale, 0.80)));
+          const centerY = rect.top + rect.height * 0.48;
+          const targetTx = rect.left + rect.width / 2 - p.x * targetScale;
+          const targetTy = centerY - p.y * targetScale;
+          animateCameraTo(targetTx, targetTy, targetScale, 520);
+          return;
+        }
+
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        pts.forEach(p => {
+          minX = Math.min(minX, p.x - p.r - 48);
+          maxX = Math.max(maxX, p.x + p.r + 48);
+          minY = Math.min(minY, p.y - p.r - 48);
+          maxY = Math.max(maxY, p.y + p.r + 60);
+        });
+
+        const cx = (minX + maxX) / 2;
+        const cy = (minY + maxY) / 2;
+        let scale;
+        if (pts.length === 1) {
+          scale = desiredScale || Math.max(state.camera.scale, isMobile ? 0.78 : 0.92);
+          scale = Math.min(1.35, Math.max(0.55, scale));
+        } else {
+          const fitScale = Math.min(rect.width / Math.max(260, maxX - minX), rect.height / Math.max(220, maxY - minY)) * 0.88;
+          scale = desiredScale ? Math.min(desiredScale, fitScale) : fitScale;
+          scale = Math.min(1.25, Math.max(0.28, scale));
+        }
+
+        const tx = rect.left + rect.width / 2 - cx * scale;
+        const ty = rect.top + rect.height / 2 - cy * scale;
+        animateCameraTo(tx, ty, scale, 560);
+      }
+
+      function zoomAtPoint(factor, screenX, screenY) {
+        if (state.animId) {
+          window.cancelAnimationFrame(state.animId);
+          state.animId = null;
+        }
+        const oldScale = state.camera.scale;
+        const newScale = Math.max(0.18, Math.min(2.4, oldScale * factor));
+        const ratio = newScale / oldScale;
+        state.camera.tx = screenX - (screenX - state.camera.tx) * ratio;
+        state.camera.ty = screenY - (screenY - state.camera.ty) * ratio;
+        state.camera.scale = newScale;
+        applyCamera();
+      }
+
+      let isPointerDown = false;
+      let dragMoved = false;
+      let lastX = 0;
+      let lastY = 0;
+      const activePointers = new Map();
+      let lastPinchDist = null;
+      let lastPinchCenter = null;
+
+      function getPinchMetrics() {
+        const pts = Array.from(activePointers.values());
+        return {
+          dist: Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y),
+          cx: (pts[0].x + pts[1].x) / 2,
+          cy: (pts[0].y + pts[1].y) / 2
+        };
+      }
+
+      mapStage.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        try { mapStage.setPointerCapture(e.pointerId); } catch (_) {}
+
+        if (activePointers.size === 1) {
+          isPointerDown = true;
+          dragMoved = false;
+          lastX = e.clientX;
+          lastY = e.clientY;
+          mapStage.classList.add('is-dragging');
+        } else if (activePointers.size === 2) {
+          isPointerDown = false;
+          dragMoved = true;
+          const m = getPinchMetrics();
+          lastPinchDist = m.dist;
+          lastPinchCenter = { x: m.cx, y: m.cy };
+        }
+      });
+
+      mapStage.addEventListener('pointermove', (e) => {
+        if (!activePointers.has(e.pointerId)) return;
+        activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        if (activePointers.size === 2 && lastPinchDist) {
+          const m = getPinchMetrics();
+          const factor = m.dist / Math.max(10, lastPinchDist);
+          state.camera.tx += m.cx - lastPinchCenter.x;
+          state.camera.ty += m.cy - lastPinchCenter.y;
+          zoomAtPoint(factor, m.cx, m.cy);
+          lastPinchDist = m.dist;
+          lastPinchCenter = { x: m.cx, y: m.cy };
+          return;
+        }
+
+        if (isPointerDown && activePointers.size === 1) {
+          const dx = e.clientX - lastX;
+          const dy = e.clientY - lastY;
+          if (Math.hypot(dx, dy) > 3) dragMoved = true;
+          if (dragMoved) {
+            if (state.animId) {
+              window.cancelAnimationFrame(state.animId);
+              state.animId = null;
+            }
+            state.camera.tx += dx;
+            state.camera.ty += dy;
+            applyCamera();
+            lastX = e.clientX;
+            lastY = e.clientY;
+          }
+        }
+      });
+
+      function endPointer(e) {
+        activePointers.delete(e.pointerId);
+        if (activePointers.size < 2) {
+          lastPinchDist = null;
+          lastPinchCenter = null;
+        }
+        if (activePointers.size === 0) {
+          isPointerDown = false;
+          mapStage.classList.remove('is-dragging');
+          setTimeout(() => { dragMoved = false; }, 40);
+        } else if (activePointers.size === 1) {
+          const remain = Array.from(activePointers.values())[0];
+          isPointerDown = true;
+          lastX = remain.x;
+          lastY = remain.y;
+        }
+      }
+
+      mapStage.addEventListener('pointerup', endPointer);
+      mapStage.addEventListener('pointercancel', endPointer);
+
+      mapStage.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.12 : 0.89;
+        zoomAtPoint(factor, e.clientX, e.clientY);
+      }, { passive: false });
+
+      // 点击空白星空仅收起档案浮卡与搜索下拉，绝不误关「一」元标尺
+      mapStage.addEventListener('click', () => {
+        if (dragMoved) return;
+        searchDropdown.classList.remove('open');
+        closeDrawer();
+      });
+
+      zoomInBtn.addEventListener('click', () => {
+        const r = getVisibleRect();
+        zoomAtPoint(1.24, r.left + r.width / 2, r.top + r.height / 2);
+      });
+      zoomOutBtn.addEventListener('click', () => {
+        const r = getVisibleRect();
+        zoomAtPoint(0.8, r.left + r.width / 2, r.top + r.height / 2);
+      });
+      zoomResetBtn.addEventListener('click', () => fitToViewport(true));
+
+      /* =======================================================================
+         十一、桌面端悬停浮卡
+         ======================================================================= */
+      function showTooltip(node, e) {
+        if (window.innerWidth <= 820) return;
+        ttGlyph.textContent = node.id;
+        ttGlyph.style.color = getNodeColor(node);
+        ttNote.textContent = node.note;
+        ttSeal.classList.toggle('show', Boolean(node.isTraditional));
+        ttTag.textContent = node.tag;
+        moveTooltip(e);
+        hoverTooltip.classList.add('visible');
+      }
+
+      function moveTooltip(e) {
+        if (window.innerWidth <= 820) return;
+        const pad = 16;
+        let x = e.clientX + 18;
+        let y = e.clientY + 14;
+        const w = hoverTooltip.offsetWidth || 220;
+        const h = hoverTooltip.offsetHeight || 80;
+        if (x + w + pad > window.innerWidth) x = e.clientX - w - 18;
+        if (y + h + pad > window.innerHeight) y = e.clientY - h - 14;
+        hoverTooltip.style.left = `${x}px`;
+        hoverTooltip.style.top = `${y}px`;
+      }
+
+      function hideTooltip() {
+        hoverTooltip.classList.remove('visible');
+      }
+
+      /* =======================================================================
+         十二、星宿档案 · 悬浮星笺渲染与阅读态切换（已移除「一」内元标尺按钮）
+         ======================================================================= */
+      function setReadingState(isReading) {
+        document.body.classList.toggle('card-reading', isReading);
+        zoomCapsule.classList.toggle('drawer-shifted', isReading);
+      }
+
+      function buildDecompHTML(id) {
+        const data = DECOMPOSITIONS[id];
+        if (!data) return '';
+
+        const strokesSvg = data.strokes.map((st, idx) => {
+          if (st.circle) {
+            return `<circle class="decomp-stroke" data-sidx="${idx}" cx="${st.circle.cx}" cy="${st.circle.cy}" r="${st.circle.r}" fill="${st.color}" />`;
+          }
+          return `<path class="decomp-stroke" data-sidx="${idx}" d="${st.d}" fill="none" stroke="${st.color}" stroke-width="${st.width}" stroke-linecap="round" stroke-linejoin="round" />`;
+        }).join('');
+
+        const legendHtml = data.strokes.map((st, idx) => `
+          <div class="decomp-item" data-sidx="${idx}">
+            <span class="decomp-swatch" style="background:${st.color}; box-shadow:0 0 8px ${st.color}88;"></span>
+            <div class="decomp-item-text">
+              <strong>${st.label}</strong><br />${st.desc}
+            </div>
+          </div>
+        `).join('');
+
+        return `
+          <section class="decomp-card">
+            <div class="decomp-head">
+              <span class="decomp-title">米字格意象拆解</span>
+              <span class="decomp-hint">悬停或轻触点亮</span>
+            </div>
+            <div class="decomp-grid-wrap">
+              <div class="decomp-svg-box">
+                <svg viewBox="0 0 120 120" width="102" height="102" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="6" y="6" width="108" height="108" rx="6" fill="none" stroke="rgba(245,196,105,0.22)" stroke-width="1" />
+                  <line x1="60" y1="6" x2="60" y2="114" stroke="rgba(245,196,105,0.16)" stroke-dasharray="3 3" />
+                  <line x1="6" y1="60" x2="114" y2="60" stroke="rgba(245,196,105,0.16)" stroke-dasharray="3 3" />
+                  <line x1="6" y1="6" x2="114" y2="114" stroke="rgba(245,196,105,0.1)" stroke-dasharray="3 4" />
+                  <line x1="114" y1="6" x2="6" y2="114" stroke="rgba(245,196,105,0.1)" stroke-dasharray="3 4" />
+                  ${strokesSvg}
+                </svg>
+              </div>
+              <div class="decomp-legend">${legendHtml}</div>
+            </div>
+          </section>
+        `;
+      }
+
+      function buildMirrorHTML(id) {
+        const m = DUAL_MIRRORS[id];
+        if (!m) return '';
+        return `
+          <section class="mirror-card">
+            <div class="mirror-head">
+              <span class="mirror-title">✦ 简繁双镜</span>
+              <span class="mirror-pair">${m.pair}</span>
+            </div>
+            <div class="mirror-cols">
+              <div class="mirror-col">
+                <div class="mirror-col-head">
+                  <span class="mirror-char">${m.simpChar}</span>
+                  <span class="mirror-tag">简体意象</span>
+                </div>
+                <p class="mirror-desc">${m.simpDesc}</p>
+              </div>
+              <div class="mirror-col">
+                <div class="mirror-col-head">
+                  <span class="mirror-char">${m.tradChar}</span>
+                  <span class="mirror-tag">繁体意象</span>
+                </div>
+                <p class="mirror-desc">${m.tradDesc}</p>
+              </div>
+            </div>
+            <div class="mirror-synth"><span class="mirror-synth-label">合参洞见：</span>${m.synth}</div>
+          </section>
+        `;
+      }
+
+      function renderDrawer(node) {
+        const accent = getNodeColor(node);
+        const tint = getNodeTint(node);
+
+        const relatedHtml = node.related.map(rid => {
+          const rn = NODE_MAP[rid];
+          if (!rn) return '';
+          const rColor = getNodeColor(rn);
+          return `
+            <button class="related-chip" type="button" data-jump="${rid}">
+              <span class="related-chip-glyph" style="color:${rColor};">${rn.id}</span>
+              <span class="related-chip-note">${rn.note}</span>
+            </button>
+          `;
+        }).join('');
+
+        drawerContent.innerHTML = `
+          <div class="drawer-hero">
+            <div class="hero-glyph-box" style="background:${tint}; border:1.5px solid ${accent}88; color:${accent}; box-shadow:0 0 24px ${accent}24;">
+              ${node.id}
+              ${node.isTraditional ? '<span class="trad-seal-badge">繁</span>' : ''}
+            </div>
+            <div class="hero-info">
+              <div class="hero-badges">
+                <span class="hero-pinyin">${node.pinyin}</span>
+                <span class="hero-note-pill">${node.note}</span>
+                <span class="hero-domain-pill" style="color:${accent}; background:${tint}; border-color:${accent}55;">
+                  ${node.realm}
+                </span>
+              </div>
+              <h2 class="hero-essence">${node.tag}</h2>
+            </div>
+          </div>
+
+          <div class="formula-box">
+            <strong style="color:${accent};">字形脉络：</strong>${node.formula}
+          </div>
+
+          ${buildDecompHTML(node.id)}
+
+          <section class="info-section">
+            <h3 class="section-heading">
+              <span class="section-dot" style="background:${accent};"></span>
+              构字隐喻
+            </h3>
+            <p class="section-text">${node.imagery}</p>
+          </section>
+
+          <section class="info-section">
+            <h3 class="section-heading">
+              <span class="section-dot" style="background:#94a3b8;"></span>
+              系统定位
+            </h3>
+            <p class="section-text">${node.positioning}</p>
+          </section>
+
+          ${buildMirrorHTML(node.id)}
+
+          <section class="practice-card" style="background:linear-gradient(135deg, ${tint}, rgba(8,14,30,0.68)); border-color:${accent}48;">
+            <div class="practice-label" style="color:${accent};">✦ 观照自省</div>
+            <p class="practice-quote">“${node.practice}”</p>
+          </section>
+
+          <section class="info-section">
+            <h3 class="section-heading">
+              <span class="section-dot" style="background:var(--c-core);"></span>
+              关联星宿
+            </h3>
+            <div class="related-chips">${relatedHtml}</div>
+          </section>
+        `;
+
+        // 绑定米字格意象交互点亮
+        const items = drawerContent.querySelectorAll('.decomp-item');
+        const strokes = drawerContent.querySelectorAll('.decomp-stroke');
+        let pinnedIdx = null;
+
+        function applyDecompHighlight(activeIdx) {
+          items.forEach(it => {
+            const idx = it.getAttribute('data-sidx');
+            it.classList.toggle('active', activeIdx !== null && idx === String(activeIdx));
+          });
+          strokes.forEach(st => {
+            const idx = st.getAttribute('data-sidx');
+            if (activeIdx === null) {
+              st.style.opacity = '1';
+              st.classList.remove('decomp-stroke-active');
+            } else if (idx === String(activeIdx)) {
+              st.style.opacity = '1';
+              st.classList.add('decomp-stroke-active');
+            } else {
+              st.style.opacity = '0.2';
+              st.classList.remove('decomp-stroke-active');
+            }
+          });
+        }
+
+        items.forEach(it => {
+          const idx = it.getAttribute('data-sidx');
+          it.addEventListener('mouseenter', () => {
+            if (pinnedIdx === null) applyDecompHighlight(idx);
+          });
+          it.addEventListener('mouseleave', () => {
+            if (pinnedIdx === null) applyDecompHighlight(null);
+          });
+          it.addEventListener('click', () => {
+            pinnedIdx = pinnedIdx === idx ? null : idx;
+            applyDecompHighlight(pinnedIdx);
+          });
+        });
+
+        strokes.forEach(st => {
+          const idx = st.getAttribute('data-sidx');
+          st.addEventListener('click', () => {
+            pinnedIdx = pinnedIdx === idx ? null : idx;
+            applyDecompHighlight(pinnedIdx);
+          });
+        });
+
+        // 关联星宿飞掠跃迁 + 短暂流光金弧
+        drawerContent.querySelectorAll('[data-jump]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-jump');
+            if (state.tourActive) stopTour(false);
+            if (state.jumpTimer) clearTimeout(state.jumpTimer);
+            state.jumpArc = { from: node.id, to: targetId };
+            state.jumpTimer = setTimeout(() => {
+              state.jumpArc = null;
+              updateVisuals();
+            }, 1900);
+            if (targetId === '一') triggerYiPulse();
+            selectNode(targetId, true, true);
+          });
+        });
+      }
+
+      function selectNode(id, panToNode = true, openPanel = true) {
+        const node = NODE_MAP[id];
+        if (!node) return;
+        state.selectedId = id;
+        if (openPanel) {
+          renderDrawer(node);
+          detailDrawer.classList.add('open');
+          setReadingState(true);
+          drawerContent.scrollTop = 0;
+        }
+        updateVisuals();
+        if (panToNode) {
+          window.requestAnimationFrame(() => {
+            focusNodesSmooth([id]);
+          });
+        }
+      }
+
+      function closeDrawer() {
+        if (!detailDrawer.classList.contains('open') && !state.selectedId) return;
+        state.selectedId = null;
+        detailDrawer.classList.remove('open');
+        setReadingState(false);
+        updateVisuals();
+      }
+
+      drawerCloseBtn.addEventListener('click', closeDrawer);
+
+      /* =======================================================================
+         十三、顶部三联控制按钮（星注、防误触「一」元标尺、九章漫游）
+         ======================================================================= */
+      starNoteBtn.addEventListener('click', () => {
+        state.showStarNotes = !state.showStarNotes;
+        updateVisuals();
+      });
+
+      function toggleMetaRuler(forceVal = null, fitView = true) {
+        const next = forceVal === null ? !state.metaRulerActive : forceVal;
+        if (next && state.tourActive) stopTour(false);
+        state.metaRulerActive = next;
+        if (next) {
+          state.activeFilter = 'all';
+          refreshFilterPills();
+          closeDrawer();
+        }
+        updateVisuals();
+        if (next && fitView) fitToViewport(true);
+      }
+
+      metaRulerBtn.addEventListener('click', () => toggleMetaRuler(null, true));
+      closeMetaBannerBtn.addEventListener('click', () => toggleMetaRuler(false, false));
+
+      /* 九章漫游 */
+      function buildTourDots() {
+        tourDots.innerHTML = '';
+        TOUR_CHAPTERS.forEach((ch, idx) => {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'tour-dot';
+          dot.title = `${ch.numeral} · ${ch.title}`;
+          dot.addEventListener('click', () => goToTourChapter(idx));
+          tourDots.appendChild(dot);
+        });
+      }
+
+      function goToTourChapter(idx) {
+        if (idx < 0 || idx >= TOUR_CHAPTERS.length) return;
+        state.tourIndex = idx;
+        const ch = TOUR_CHAPTERS[idx];
+        state.tourFocusSet = new Set(ch.focus);
+        state.metaRulerActive = Boolean(ch.metaRuler);
+
+        tourNumeral.textContent = ch.numeral;
+        tourTitle.textContent = ch.title;
+        tourBody.textContent = ch.body;
+        tourPrevBtn.disabled = idx === 0;
+        tourNextBtn.textContent = idx === TOUR_CHAPTERS.length - 1 ? '圆满收官' : '下一章';
+
+        tourDots.querySelectorAll('.tour-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === idx);
+        });
+
+        const isDesktop = window.innerWidth > 900;
+        if (isDesktop && ch.openId) {
+          state.selectedId = ch.openId;
+          renderDrawer(NODE_MAP[ch.openId]);
+          detailDrawer.classList.add('open');
+          setReadingState(true);
+        } else if (!isDesktop) {
+          detailDrawer.classList.remove('open');
+          setReadingState(false);
+          state.selectedId = ch.openId || null;
+        }
+
+        updateVisuals();
+        if (ch.overview) fitToViewport(true);
+        else focusNodesSmooth(ch.focus, ch.scale);
+      }
+
+      function startTour() {
+        state.metaRulerActive = false;
+        state.tourActive = true;
+        state.activeFilter = 'all';
+        refreshFilterPills();
+        tourCard.classList.add('visible');
+        goToTourChapter(0);
+      }
+
+      function stopTour(resetView = false) {
+        state.tourActive = false;
+        state.tourFocusSet = null;
+        state.metaRulerActive = false;
+        tourCard.classList.remove('visible');
+        updateVisuals();
+        if (resetView) fitToViewport(true);
+      }
+
+      tourBtn.addEventListener('click', () => {
+        if (state.tourActive) stopTour(false);
+        else startTour();
+      });
+      tourCloseBtn.addEventListener('click', () => stopTour(false));
+      tourPrevBtn.addEventListener('click', () => goToTourChapter(state.tourIndex - 1));
+      tourNextBtn.addEventListener('click', () => {
+        if (state.tourIndex >= TOUR_CHAPTERS.length - 1) stopTour(false);
+        else goToTourChapter(state.tourIndex + 1);
+      });
+
+      /* =======================================================================
+         十四、底部星域导航栏与无字小搜索框实时检索
+         ======================================================================= */
+      const FILTER_ITEMS = [
+        { id: 'all', label: '全部', color: '#f5c469' },
+        { id: 'core', label: '演化主脉', color: DOMAINS.core.color },
+        { id: 'calib', label: '知行校准', color: DOMAINS.calib.color },
+        { id: 'wood', label: '木系根基', color: DOMAINS.wood.color },
+        { id: 'craft', label: '形态打磨', color: DOMAINS.craft.color },
+        { id: 'delivery', label: '价值交付', color: DOMAINS.delivery.color },
+        { id: 'moat', label: '长期壁垒', color: DOMAINS.moat.color },
+        { id: 'shadow', label: '系统暗面', color: DOMAINS.shadow.color },
+        { id: 'leap', label: '高维化境', color: DOMAINS.leap.color },
+        { id: 'relics', label: '繁体遗珠', color: '#c23b2b' }
+      ];
+
+      function initFilterBar() {
+        filterBar.innerHTML = '';
+        FILTER_ITEMS.forEach(item => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'filter-pill' + (item.id === 'all' ? ' active' : '');
+          btn.setAttribute('data-filter', item.id);
+          btn.style.setProperty('--pill-border', `${item.color}88`);
+          btn.style.setProperty('--pill-glow', `${item.color}30`);
+          btn.innerHTML = `<span class="pill-dot" style="background:${item.color};"></span><span>${item.label}</span>`;
+
+          btn.addEventListener('click', () => {
+            if (state.tourActive) stopTour(false);
+            state.activeFilter = item.id;
+            refreshFilterPills();
+            updateVisuals();
+
+            if (item.id === 'all') {
+              fitToViewport(true);
+            } else {
+              const matched = NODES.filter(n => nodeMatchesFilter(n)).map(n => n.id);
+              if (matched.length) focusNodesSmooth(matched);
+            }
+          });
+          filterBar.appendChild(btn);
+        });
+      }
+
+      function refreshFilterPills() {
+        filterBar.querySelectorAll('.filter-pill').forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-filter') === state.activeFilter);
+        });
+      }
+
+      function renderSearchResults(q) {
+        const query = q.trim();
+        searchClearBtn.classList.toggle('visible', query.length > 0);
+        if (!query) {
+          searchDropdown.classList.remove('open');
+          searchDropdown.innerHTML = '';
+          return;
+        }
+        const lower = query.toLowerCase();
+        const matches = NODES.filter(n => {
+          const m = DUAL_MIRRORS[n.id];
+          return (
+            n.id.includes(query) ||
+            n.note.includes(query) ||
+            n.pinyin.toLowerCase().includes(lower) ||
+            n.tag.includes(query) ||
+            n.realm.includes(query) ||
+            DOMAINS[n.domain].name.includes(query) ||
+            (n.isTraditional && (query === '繁' || '繁体遗珠'.includes(query))) ||
+            (m && (m.pair.includes(query) || '简繁双镜'.includes(query)))
+          );
+        });
+
+        if (!matches.length) {
+          searchDropdown.innerHTML = '<div class="search-empty">星海未寻得此关键词</div>';
+        } else {
+          searchDropdown.innerHTML = matches.slice(0, 10).map(n => {
+            const c = getNodeColor(n);
+            const t = getNodeTint(n);
+            return `
+              <button class="search-item" type="button" data-pick="${n.id}">
+                <span class="search-item-glyph" style="background:${t}; color:${c}; border:1px solid ${c}55;">${n.id}</span>
+                <div class="search-item-meta">
+                  <div class="search-item-top">
+                    <span class="search-item-note">${n.note}</span>
+                    <span class="search-item-domain">${DOMAINS[n.domain].name}</span>
+                  </div>
+                  <div class="search-item-tag">${n.tag}</div>
+                </div>
+              </button>
+            `;
+          }).join('');
+
+          searchDropdown.querySelectorAll('[data-pick]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const id = btn.getAttribute('data-pick');
+              if (state.tourActive) stopTour(false);
+              state.activeFilter = 'all';
+              refreshFilterPills();
+              searchDropdown.classList.remove('open');
+              searchInput.blur();
+              if (id === '一') triggerYiPulse();
+              selectNode(id, true, true);
+            });
+          });
+        }
+        searchDropdown.classList.add('open');
+      }
+
+      searchInput.addEventListener('input', (e) => renderSearchResults(e.target.value));
+      searchInput.addEventListener('focus', () => {
+        if (searchInput.value.trim()) renderSearchResults(searchInput.value);
+      });
+      searchClearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        renderSearchResults('');
+        searchInput.focus();
+      });
+
+      document.addEventListener('click', (e) => {
+        const wrap = document.getElementById('searchWrap');
+        if (wrap && !wrap.contains(e.target)) {
+          searchDropdown.classList.remove('open');
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          searchDropdown.classList.remove('open');
+          if (state.tourActive) stopTour(false);
+          else if (detailDrawer.classList.contains('open')) closeDrawer();
+        }
+      });
+
+      /* =======================================================================
+         十五、初始化启动
+         ======================================================================= */
+      initStarfieldCanvas();
+      buildStarMap();
+      initFilterBar();
+      buildTourDots();
+      updateVisuals();
+      fitToViewport(false);
+
+      let resizeTimer = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          state.fitScale = computeFitMetrics().scale;
+          if (!state.selectedId && !state.tourActive && !state.metaRulerActive) {
+            fitToViewport(true);
+          } else {
+            updateMarginaliaOpacity();
+          }
+        }, 180);
+      });
+    });
+  </script>
+</body>
+</html>
