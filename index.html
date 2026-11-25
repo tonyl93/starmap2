@@ -1,28 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<!-- 苹果桌面全屏模式与专属八芒星图标 -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="汉字星图">
-<link id="apple-icon" rel="apple-touch-icon">
-<script>
-(function(){
-  var c = document.createElement('canvas'); c.width = c.height = 180;
-  var x = c.getContext('2d');
-  var g = x.createRadialGradient(90, 90, 10, 90, 90, 110);
-  g.addColorStop(0, '#151d38'); g.addColorStop(1, '#070a14');
-  x.fillStyle = g; x.fillRect(0, 0, 180, 180);
-  x.strokeStyle = '#e8c87e'; x.lineCap = 'round';
-  for (var i = 0; i < 8; i++) {
-    var a = i * Math.PI / 4, r = (i % 2 === 0) ? 52 : 34;
-    x.lineWidth = (i % 2 === 0) ? 3.2 : 2;
-    x.beginPath(); x.moveTo(90, 90);
-    x.lineTo(90 + Math.cos(a) * r, 90 + Math.sin(a) * r); x.stroke();
-  }
-  x.fillStyle = '#f6dfa4'; x.beginPath(); x.arc(90, 90, 5.5, 0, Math.PI * 2); x.fill();
-  document.getElementById('apple-icon').href = c.toDataURL('image/png');
-})();
-</script>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
