@@ -20,45 +20,54 @@
         c.height = 180;
         var ctx = c.getContext('2d');
         if (!ctx) return;
-        var g = ctx.createRadialGradient(90, 84, 8, 90, 90, 122);
-        g.addColorStop(0, '#162244');
-        g.addColorStop(0.55, '#0b1326');
-        g.addColorStop(1, '#050914');
-        ctx.fillStyle = g;
+
+        /* 纯净白底极轻珠光径向渐变 */
+        var bg = ctx.createRadialGradient(90, 82, 10, 90, 90, 128);
+        bg.addColorStop(0, '#ffffff');
+        bg.addColorStop(0.62, '#fafbfd');
+        bg.addColorStop(1, '#f4f5f8');
+        ctx.fillStyle = bg;
         ctx.fillRect(0, 0, 180, 180);
 
-        /* Subtle outer ring */
-        ctx.strokeStyle = 'rgba(245, 196, 105, 0.24)';
-        ctx.lineWidth = 1.4;
+        /* 暖鎏金渐变（白底清晰锐利） */
+        var goldGrad = ctx.createLinearGradient(34, 26, 146, 154);
+        goldGrad.addColorStop(0, '#dfa740');
+        goldGrad.addColorStop(0.5, '#c48a24');
+        goldGrad.addColorStop(1, '#9e6b14');
+
+        /* 浅金细外环 */
+        ctx.strokeStyle = 'rgba(196, 138, 36, 0.28)';
+        ctx.lineWidth = 1.6;
         ctx.beginPath();
         ctx.arc(90, 90, 68, 0, Math.PI * 2);
         ctx.stroke();
 
-        /* 4-point slender star diamond */
+        /* 四向纤细长芒 */
         ctx.save();
-        ctx.shadowColor = 'rgba(245, 196, 105, 0.55)';
-        ctx.shadowBlur = 12;
+        ctx.shadowColor = 'rgba(158, 107, 20, 0.22)';
+        ctx.shadowBlur = 7;
+        ctx.shadowOffsetY = 1.5;
         ctx.beginPath();
         ctx.moveTo(90, 26);
-        ctx.lineTo(97, 83);
+        ctx.lineTo(97.5, 82.5);
         ctx.lineTo(154, 90);
-        ctx.lineTo(97, 97);
+        ctx.lineTo(97.5, 97.5);
         ctx.lineTo(90, 154);
-        ctx.lineTo(83, 97);
+        ctx.lineTo(82.5, 97.5);
         ctx.lineTo(26, 90);
-        ctx.lineTo(83, 83);
+        ctx.lineTo(82.5, 82.5);
         ctx.closePath();
-        ctx.fillStyle = 'rgba(245, 196, 105, 0.20)';
+        ctx.fillStyle = 'rgba(223, 167, 64, 0.22)';
         ctx.fill();
-        ctx.strokeStyle = '#f5c469';
-        ctx.lineWidth = 2.6;
+        ctx.strokeStyle = goldGrad;
+        ctx.lineWidth = 3.0;
         ctx.lineJoin = 'round';
         ctx.stroke();
         ctx.restore();
 
-        /* 4 diagonal short rays */
-        ctx.strokeStyle = 'rgba(245, 196, 105, 0.88)';
-        ctx.lineWidth = 2.2;
+        /* 四隅斜向短芒 */
+        ctx.strokeStyle = goldGrad;
+        ctx.lineWidth = 2.4;
         ctx.lineCap = 'round';
         var diag = [
           [46, 46, 73, 73],
@@ -73,10 +82,14 @@
           ctx.stroke();
         }
 
-        /* Center pearl */
-        ctx.fillStyle = '#fff5d8';
+        /* 中心暖金微珠 */
+        var pearlGrad = ctx.createRadialGradient(88, 88, 1, 90, 90, 7);
+        pearlGrad.addColorStop(0, '#f3ca74');
+        pearlGrad.addColorStop(0.55, '#c48a24');
+        pearlGrad.addColorStop(1, '#9e6b14');
+        ctx.fillStyle = pearlGrad;
         ctx.beginPath();
-        ctx.arc(90, 90, 6, 0, Math.PI * 2);
+        ctx.arc(90, 90, 6.5, 0, Math.PI * 2);
         ctx.fill();
 
         var url = c.toDataURL('image/png');
@@ -1466,7 +1479,7 @@
         mask-image: linear-gradient(to right, transparent 0%, #000 18px, #000 calc(100% - 18px), transparent 100%);
       }
 
-      /* 移动端右侧独立竖向缩放胶囊：悬停于底部星域导航栏与安全区之上 */
+      /* 移动端右侧独立竖向缩放胶囊（严格避开底部导航栏与安全区） */
       .zoom-capsule {
         right: 12px;
         bottom: calc(78px + env(safe-area-inset-bottom, 0px));
@@ -1479,7 +1492,7 @@
         height: 34px;
       }
 
-      /* 移动端九章漫游卡：悬停于底部星域导航栏与安全区之上 */
+      /* 移动端九章漫游卡 */
       .tour-card {
         left: 12px;
         right: 64px;
@@ -2776,12 +2789,12 @@
         },
         {
           numeral: '玖',
-          title: '化境与复归于一',
-          body: '星海之巅高悬紫金冠冕：「来」万象自来、「番」播入现实、「氣」化形为场、「类」自成一派。全景拉远，流动铂金星轨点亮七星元标尺——起于一，历经分化、扎根、绽放，终在更高维度重逢一。',
-          focus: ['来', '番', '氣', '类', '一', '士', '土', '干', '本', '末'],
+          title: '高维化境',
+          body: '星海之巅高悬紫金冠冕：「来」以顶层愿景收束全局、令万象自来；「番」将结晶播入现实沃野；「氣」蒸米化形为无形气场；「类」托举格局、自成一派，终成生生不息的化境气象。',
+          focus: ['来', '番', '氣', '类'],
           openId: '来',
-          overview: true,
-          metaRuler: true
+          scale: 0.78,
+          metaRuler: false
         }
       ];
 
@@ -3254,7 +3267,6 @@
          ======================================================================= */
       function nodeMatchesFilter(node) {
         if (state.activeFilter === 'all') return true;
-        if (state.activeFilter === 'relics') return Boolean(node.isTraditional);
         return node.domain === state.activeFilter;
       }
 
@@ -3454,7 +3466,7 @@
           } else if (state.metaRulerActive) {
             targetOp = 0.08;
           } else if (state.activeFilter !== 'all') {
-            if (state.activeFilter === 'relics' || state.activeFilter === 'core') {
+            if (state.activeFilter === 'core') {
               targetOp = 0.08;
             } else {
               targetOp = domId === state.activeFilter ? Math.min(0.82, breathOp + 0.12) : 0.08;
@@ -3537,7 +3549,8 @@
         const scale = Math.max(0.16, Math.min(1.15, Math.min(rect.width / boxW, rect.height / boxH) * 0.96));
         const cx = (minX + maxX) / 2;
         const cy = (minY + maxY) / 2;
-        const verticalAnchor = window.innerHeight > window.innerWidth ? 0.43 : 0.48;
+        const isPortrait = window.innerHeight > window.innerWidth;
+        const verticalAnchor = isPortrait ? 0.43 : 0.48;
         const tx = rect.left + rect.width / 2 - cx * scale;
         const ty = rect.top + rect.height * verticalAnchor - cy * scale;
 
@@ -4099,8 +4112,7 @@
         { id: 'delivery', label: '价值交付', color: DOMAINS.delivery.color },
         { id: 'moat', label: '长期壁垒', color: DOMAINS.moat.color },
         { id: 'shadow', label: '系统暗面', color: DOMAINS.shadow.color },
-        { id: 'leap', label: '高维化境', color: DOMAINS.leap.color },
-        { id: 'relics', label: '繁体遗珠', color: '#c23b2b' }
+        { id: 'leap', label: '高维化境', color: DOMAINS.leap.color }
       ];
 
       function initFilterBar() {
@@ -4117,11 +4129,13 @@
           btn.addEventListener('click', () => {
             if (state.tourActive) stopTour(false);
             if (state.metaRulerActive) state.metaRulerActive = false;
-            state.activeFilter = item.id;
+
+            const isSecondClick = item.id !== 'all' && state.activeFilter === item.id;
+            state.activeFilter = isSecondClick ? 'all' : item.id;
             refreshFilterPills();
             updateVisuals();
 
-            if (item.id === 'all') {
+            if (state.activeFilter === 'all') {
               fitToViewport(true);
             } else {
               const matched = NODES.filter(n => nodeMatchesFilter(n)).map(n => n.id);
