@@ -21,59 +21,57 @@
         var ctx = c.getContext('2d');
         if (!ctx) return;
 
-        /* 纯净白底极轻珠光径向渐变 */
-        var bg = ctx.createRadialGradient(90, 82, 10, 90, 90, 128);
-        bg.addColorStop(0, '#ffffff');
-        bg.addColorStop(0.62, '#fafbfd');
-        bg.addColorStop(1, '#f4f5f8');
-        ctx.fillStyle = bg;
+        /* Clean pure-white background with ultra-subtle pearl radial sheen */
+        var g = ctx.createRadialGradient(90, 86, 12, 90, 90, 128);
+        g.addColorStop(0, '#ffffff');
+        g.addColorStop(0.7, '#fcfcfd');
+        g.addColorStop(1, '#f4f5f8');
+        ctx.fillStyle = g;
         ctx.fillRect(0, 0, 180, 180);
 
-        /* 暖鎏金渐变（白底清晰锐利） */
-        var goldGrad = ctx.createLinearGradient(34, 26, 146, 154);
-        goldGrad.addColorStop(0, '#dfa740');
-        goldGrad.addColorStop(0.5, '#c48a24');
-        goldGrad.addColorStop(1, '#9e6b14');
-
-        /* 浅金细外环 */
-        ctx.strokeStyle = 'rgba(196, 138, 36, 0.28)';
-        ctx.lineWidth = 1.6;
+        /* Subtle antique-gold celestial halo ring */
+        ctx.strokeStyle = 'rgba(196, 146, 52, 0.26)';
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.arc(90, 90, 68, 0, Math.PI * 2);
+        ctx.arc(90, 90, 66, 0, Math.PI * 2);
         ctx.stroke();
 
-        /* 四向纤细长芒 */
+        /* 4-point slender golden starburst diamond */
+        var starGrad = ctx.createLinearGradient(28, 28, 152, 152);
+        starGrad.addColorStop(0, '#dfa740');
+        starGrad.addColorStop(0.5, '#c48a24');
+        starGrad.addColorStop(1, '#9e6b14');
+
         ctx.save();
-        ctx.shadowColor = 'rgba(158, 107, 20, 0.22)';
-        ctx.shadowBlur = 7;
-        ctx.shadowOffsetY = 1.5;
+        ctx.shadowColor = 'rgba(184, 130, 32, 0.24)';
+        ctx.shadowBlur = 10;
         ctx.beginPath();
-        ctx.moveTo(90, 26);
+        ctx.moveTo(90, 24);
         ctx.lineTo(97.5, 82.5);
-        ctx.lineTo(154, 90);
+        ctx.lineTo(156, 90);
         ctx.lineTo(97.5, 97.5);
-        ctx.lineTo(90, 154);
+        ctx.lineTo(90, 156);
         ctx.lineTo(82.5, 97.5);
-        ctx.lineTo(26, 90);
+        ctx.lineTo(24, 90);
         ctx.lineTo(82.5, 82.5);
         ctx.closePath();
-        ctx.fillStyle = 'rgba(223, 167, 64, 0.22)';
+        ctx.fillStyle = 'rgba(218, 166, 68, 0.22)';
         ctx.fill();
-        ctx.strokeStyle = goldGrad;
-        ctx.lineWidth = 3.0;
+        ctx.strokeStyle = starGrad;
+        ctx.lineWidth = 2.8;
         ctx.lineJoin = 'round';
         ctx.stroke();
         ctx.restore();
 
-        /* 四隅斜向短芒 */
-        ctx.strokeStyle = goldGrad;
-        ctx.lineWidth = 2.4;
+        /* 4 diagonal short star rays */
+        ctx.strokeStyle = '#c58d27';
+        ctx.lineWidth = 2.5;
         ctx.lineCap = 'round';
         var diag = [
-          [46, 46, 73, 73],
-          [134, 46, 107, 73],
-          [46, 134, 73, 107],
-          [134, 134, 107, 107]
+          [45, 45, 73, 73],
+          [135, 45, 107, 73],
+          [45, 135, 73, 107],
+          [135, 135, 107, 107]
         ];
         for (var i = 0; i < diag.length; i++) {
           ctx.beginPath();
@@ -82,14 +80,14 @@
           ctx.stroke();
         }
 
-        /* 中心暖金微珠 */
-        var pearlGrad = ctx.createRadialGradient(88, 88, 1, 90, 90, 7);
-        pearlGrad.addColorStop(0, '#f3ca74');
-        pearlGrad.addColorStop(0.55, '#c48a24');
-        pearlGrad.addColorStop(1, '#9e6b14');
-        ctx.fillStyle = pearlGrad;
+        /* Crisp gilded center pearl */
+        ctx.fillStyle = '#b67d1b';
         ctx.beginPath();
-        ctx.arc(90, 90, 6.5, 0, Math.PI * 2);
+        ctx.arc(90, 90, 6.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#fff9eb';
+        ctx.beginPath();
+        ctx.arc(90, 90, 2.3, 0, Math.PI * 2);
         ctx.fill();
 
         var url = c.toDataURL('image/png');
@@ -1186,6 +1184,8 @@
       line-height: 1.7;
       color: #fef6e4;
     }
+
+
 
     /* 米字格交互笔画解构器 */
     .decomp-card {
@@ -3267,6 +3267,7 @@
          ======================================================================= */
       function nodeMatchesFilter(node) {
         if (state.activeFilter === 'all') return true;
+        if (state.activeFilter === 'relics') return Boolean(node.isTraditional);
         return node.domain === state.activeFilter;
       }
 
@@ -3433,18 +3434,23 @@
         }, 1150);
       }
 
+      function isNotchedStandalone() {
+        return Boolean(window.navigator.standalone && Math.max(window.screen.width, window.screen.height) >= 800);
+      }
+
       function getOverviewScale() {
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
+        const vw = mapStage.clientWidth || window.innerWidth;
+        const vh = mapStage.clientHeight || window.innerHeight;
         const isDesktop = vw > 820;
+        const notchedPwa = !isDesktop && isNotchedStandalone();
         const leftPad = isDesktop ? 32 : 12;
         const rightPad = isDesktop ? 72 : 12;
         const headerEl = document.querySelector('.top-header-shell');
         const headerBottom = headerEl ? Math.ceil(headerEl.getBoundingClientRect().bottom) + 12 : (isDesktop ? 114 : 116);
-        const topPad = Math.max(isDesktop ? 114 : 112, headerBottom);
+        const topPad = Math.max(isDesktop ? 114 : (notchedPwa ? 168 : 112), headerBottom);
         const filterEl = document.querySelector('.filter-bar-wrap');
         const filterSpace = filterEl ? Math.ceil(vh - filterEl.getBoundingClientRect().top) + 12 : (isDesktop ? 86 : 96);
-        const bottomPad = Math.max(isDesktop ? 86 : 84, filterSpace);
+        const bottomPad = Math.max(isDesktop ? 86 : (notchedPwa ? 104 : 84), filterSpace);
         const w = Math.max(220, vw - leftPad - rightPad);
         const h = Math.max(220, vh - topPad - bottomPad);
         return Math.max(0.16, Math.min(1.15, Math.min(w / (2545 - 110), h / (1390 - 95)) * 0.96));
@@ -3466,7 +3472,7 @@
           } else if (state.metaRulerActive) {
             targetOp = 0.08;
           } else if (state.activeFilter !== 'all') {
-            if (state.activeFilter === 'core') {
+            if (state.activeFilter === 'relics' || state.activeFilter === 'core') {
               targetOp = 0.08;
             } else {
               targetOp = domId === state.activeFilter ? Math.min(0.82, breathOp + 0.12) : 0.08;
@@ -3517,18 +3523,19 @@
       }
 
       function getVisibleRect(forSingleNode = false) {
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
+        const vw = mapStage.clientWidth || window.innerWidth;
+        const vh = mapStage.clientHeight || window.innerHeight;
         const isDesktop = vw > 820;
+        const notchedPwa = !isDesktop && isNotchedStandalone();
         const drawerOpen = detailDrawer.classList.contains('open');
         const leftPad = isDesktop ? 32 : 12;
         const rightPad = isDesktop ? (drawerOpen ? 440 : 72) : 12;
         const headerEl = document.querySelector('.top-header-shell');
         const headerBottom = headerEl ? Math.ceil(headerEl.getBoundingClientRect().bottom) + 12 : (isDesktop ? 114 : 116);
-        const topPad = Math.max(isDesktop ? 114 : 112, headerBottom);
+        const topPad = Math.max(isDesktop ? 114 : (notchedPwa ? 168 : 112), headerBottom);
         const filterEl = document.querySelector('.filter-bar-wrap');
         const filterSpace = filterEl ? Math.ceil(vh - filterEl.getBoundingClientRect().top) + 12 : (isDesktop ? 86 : 96);
-        let bottomPad = Math.max(isDesktop ? 86 : 84, filterSpace);
+        let bottomPad = Math.max(isDesktop ? 86 : (notchedPwa ? 104 : 84), filterSpace);
         if (!isDesktop && drawerOpen && forSingleNode) {
           const cardH = detailDrawer.offsetHeight || Math.min(vh * 0.60, vh - 216);
           bottomPad = cardH + 22;
@@ -3550,7 +3557,7 @@
         const cx = (minX + maxX) / 2;
         const cy = (minY + maxY) / 2;
         const isPortrait = window.innerHeight > window.innerWidth;
-        const verticalAnchor = isPortrait ? 0.43 : 0.48;
+        const verticalAnchor = isPortrait ? 0.40 : 0.48;
         const tx = rect.left + rect.width / 2 - cx * scale;
         const ty = rect.top + rect.height * verticalAnchor - cy * scale;
 
@@ -3829,6 +3836,8 @@
         const accent = getNodeColor(node);
         const tint = getNodeTint(node);
 
+
+
         const relatedHtml = node.related.map(rid => {
           const rn = NODE_MAP[rid];
           if (!rn) return '';
@@ -3943,6 +3952,8 @@
             applyDecompHighlight(pinnedIdx);
           });
         });
+
+
 
         // 关联星宿飞掠跃迁 + 短暂流光金弧
         drawerContent.querySelectorAll('[data-jump]').forEach(btn => {
@@ -4130,8 +4141,11 @@
             if (state.tourActive) stopTour(false);
             if (state.metaRulerActive) state.metaRulerActive = false;
 
-            const isSecondClick = item.id !== 'all' && state.activeFilter === item.id;
-            state.activeFilter = isSecondClick ? 'all' : item.id;
+            if (item.id !== 'all' && state.activeFilter === item.id) {
+              state.activeFilter = 'all';
+            } else {
+              state.activeFilter = item.id;
+            }
             refreshFilterPills();
             updateVisuals();
 
@@ -4248,17 +4262,31 @@
       initFilterBar();
       buildTourDots();
       updateVisuals();
+      let userMovedMap = false;
+      mapStage.addEventListener('pointerdown', () => { userMovedMap = true; }, { passive: true });
+      mapStage.addEventListener('wheel', () => { userMovedMap = true; }, { passive: true });
+
       fitToViewport(false);
-      window.requestAnimationFrame(() => fitToViewport(false));
+      window.requestAnimationFrame(() => {
+        if (!userMovedMap && !state.selectedId && !state.tourActive) {
+          fitToViewport(false);
+        }
+      });
+      window.addEventListener('load', () => {
+        if (!userMovedMap && !state.selectedId && !state.tourActive) {
+          fitToViewport(false);
+        }
+      });
 
       let resizeTimer = null;
       window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-          if (!state.selectedId && !state.tourActive) {
-            fitToViewport(true);
+          if (document.activeElement === searchInput) return;
+          if (!state.selectedId && !state.tourActive && state.activeFilter === 'all' && !state.metaRulerActive) {
+            fitToViewport(false);
           }
-        }, 180);
+        }, 120);
       });
     });
   </script>
