@@ -3438,22 +3438,46 @@
         return Boolean(window.navigator.standalone && Math.max(window.screen.width, window.screen.height) >= 800);
       }
 
-      function getOverviewScale() {
+      function getStableViewportSize() {
         const vw = mapStage.clientWidth || window.innerWidth;
-        const vh = mapStage.clientHeight || window.innerHeight;
-        const isDesktop = vw > 820;
-        const notchedPwa = !isDesktop && isNotchedStandalone();
-        const leftPad = isDesktop ? 32 : 12;
-        const rightPad = isDesktop ? 72 : 12;
-        const headerEl = document.querySelector('.top-header-shell');
-        const headerBottom = headerEl ? Math.ceil(headerEl.getBoundingClientRect().bottom) + 12 : (isDesktop ? 114 : 116);
-        const topPad = Math.max(isDesktop ? 114 : (notchedPwa ? 168 : 112), headerBottom);
-        const filterEl = document.querySelector('.filter-bar-wrap');
-        const filterSpace = filterEl ? Math.ceil(vh - filterEl.getBoundingClientRect().top) + 12 : (isDesktop ? 86 : 96);
-        const bottomPad = Math.max(isDesktop ? 86 : (notchedPwa ? 104 : 84), filterSpace);
-        const w = Math.max(220, vw - leftPad - rightPad);
-        const h = Math.max(220, vh - topPad - bottomPad);
-        return Math.max(0.16, Math.min(1.15, Math.min(w / (2545 - 110), h / (1390 - 95)) * 0.96));
+        const rawVh = mapStage.clientHeight || window.innerHeight;
+        const isPortrait = rawVh > vw;
+        if (isPortrait && window.navigator.standalone) {
+          const screenLong = Math.max(window.screen.width || 0, window.screen.height || 0);
+          if (screenLong >= rawVh && screenLong <= rawVh * 1.25) {
+            return { vw, vh: screenLong, isPortrait: true };
+          }
+        }
+        return { vw, vh: rawVh, isPortrait };
+      }
+
+      function getOverviewMetrics() {
+        const { vw, vh, isPortrait } = getStableViewportSize();
+        const minX = 110, maxX = 2545, minY = 95, maxY = 1390;
+        const boxW = maxX - minX;
+        const boxH = maxY - minY;
+        const cx = (minX + maxX) / 2;
+        const cy = (minY + maxY) / 2;
+
+        /* 手机竖屏全览：彻底与顶部匾额/底部导航实时高度脱钩，按稳定屏高 47% 锁定中心 */
+        if (vw <= 820 && isPortrait) {
+          const availW = Math.max(220, vw - 24);
+          const availH = Math.max(220, vh * 0.62);
+          const scale = Math.max(0.16, Math.min(1.15, Math.min(availW / boxW, availH / boxH) * 0.96));
+          const tx = vw / 2 - cx * scale;
+          const ty = vh * 0.47 - cy * scale;
+          return { tx, ty, scale };
+        }
+
+        const rect = getVisibleRect();
+        const scale = Math.max(0.16, Math.min(1.15, Math.min(rect.width / boxW, rect.height / boxH) * 0.96));
+        const tx = rect.left + rect.width / 2 - cx * scale;
+        const ty = rect.top + rect.height * 0.48 - cy * scale;
+        return { tx, ty, scale };
+      }
+
+      function getOverviewScale() {
+        return getOverviewMetrics().scale;
       }
 
       function updateMarginaliaBreathing() {
@@ -3549,18 +3573,7 @@
       }
 
       function fitToViewport(animated = true) {
-        const rect = getVisibleRect();
-        const minX = 110, maxX = 2545, minY = 95, maxY = 1390;
-        const boxW = maxX - minX;
-        const boxH = maxY - minY;
-        const scale = Math.max(0.16, Math.min(1.15, Math.min(rect.width / boxW, rect.height / boxH) * 0.96));
-        const cx = (minX + maxX) / 2;
-        const cy = (minY + maxY) / 2;
-        const isPortrait = window.innerHeight > window.innerWidth;
-        const verticalAnchor = isPortrait ? 0.40 : 0.48;
-        const tx = rect.left + rect.width / 2 - cx * scale;
-        const ty = rect.top + rect.height * verticalAnchor - cy * scale;
-
+        const { tx, ty, scale } = getOverviewMetrics();
         if (animated) {
           animateCameraTo(tx, ty, scale, 600);
         } else {
@@ -4271,24 +4284,18 @@
       initFilterBar();
       buildTourDots();
       updateVisuals();
-      let userMovedMap = false;
-      mapStage.addEventListener('pointerdown', () => { userMovedMap = true; }, { passive: true });
-      mapStage.addEventListener('wheel', () => { userMovedMap = true; }, { passive: true });
-
       fitToViewport(false);
-      window.requestAnimationFrame(() => {
-        if (!userMovedMap && !state.selectedId && !state.tourActive) {
-          fitToViewport(false);
-        }
-      });
-      window.addEventListener('load', () => {
-        if (!userMovedMap && !state.selectedId && !state.tourActive) {
-          fitToViewport(false);
-        }
-      });
 
+      let lastLayoutWidth = window.innerWidth;
       let resizeTimer = null;
       window.addEventListener('resize', () => {
+        const curWidth = window.innerWidth;
+        const widthChanged = Math.abs(curWidth - lastLayoutWidth) > 2;
+        if (curWidth <= 820 && !widthChanged) {
+          /* 移动端屏蔽冷启动、安全区延迟与弹键盘引起的纯高度抖动，锁死星图位置 */
+          return;
+        }
+        lastLayoutWidth = curWidth;
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
           if (document.activeElement === searchInput) return;
