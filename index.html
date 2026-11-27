@@ -4096,6 +4096,15 @@
         state.tourActive = false;
         state.tourFocusSet = null;
         tourCard.classList.remove('visible');
+        if (resetView) {
+          state.selectedId = null;
+          state.metaRulerActive = false;
+          state.activeFilter = 'all';
+          detailDrawer.classList.remove('open');
+          document.body.classList.remove('card-reading');
+          zoomCapsule.classList.remove('drawer-shifted');
+          refreshFilterPills();
+        }
         updateVisuals();
         if (resetView) fitToViewport(true);
       }
@@ -4107,7 +4116,7 @@
       tourCloseBtn.addEventListener('click', () => stopTour(false));
       tourPrevBtn.addEventListener('click', () => goToTourChapter(state.tourIndex - 1));
       tourNextBtn.addEventListener('click', () => {
-        if (state.tourIndex >= TOUR_CHAPTERS.length - 1) stopTour(false);
+        if (state.tourIndex >= TOUR_CHAPTERS.length - 1) stopTour(true);
         else goToTourChapter(state.tourIndex + 1);
       });
 
